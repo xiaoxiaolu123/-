@@ -5,7 +5,7 @@ import store from './store'
 
 // import '@/assets/common/reset.css';
 import '@/assets/common/iconfont/iconfont.css';
-// import '@/assets/common/common.less';
+import '@/assets/common/variable.less';
 import instance from '@/api/instance';
 
 import ElementUI from 'element-ui';
