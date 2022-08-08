@@ -16,42 +16,52 @@ const routes = [
     children:[
       {
         path:'/role',
+        name:"Role",
         component: () => import('@/views/operation/RoleView.vue'),
       },
       {
         path:'/promocode',
+        name:'Promocode',
         component: () => import('@/views/operation/PromocodeView.vue'),
       },
       {
         path:'/wechat/messagereply/index',
+        name:'MessagereplyIndex',
         component: () => import('@/views/operation/WechatView.vue'),
       },
       {
         path:'/course/vod/index',
+        name:'vodIndex',
         component: () => import('@/views/course/IndexView.vue'),
       },
       {
         path:'/member/index',
+        name:'memberIndex',
         component: () => import('@/views/member/IndexView.vue'),
       },
       {
         path:'/order/index',
+        name:'orderIndex',
         component: () => import('@/views/order/IndexView.vue'),
       },
       {
         path:'/withdrawOrders',
+        name:'withdrawOrders',
         component: () => import('@/views/order/WithdrawOrdersView.vue'),
       },
       {
         path:'/system/administrator',
+        name:'systemAdministrator',
         component: () => import('@/views/system/AdministratorView.vue'),
       },
       {
         path:'/system/index',
+        name:'systemIndex',
         component: () => import('@/views/system/IndexView.vue'),
       },
       {
         path:'/system/application',
+        name:'systemApplication',
         component: () => import('@/views/system/ApplicationView.vue'),
       }
       

@@ -10,6 +10,10 @@ const instance = axios.create({
 instance.interceptors.request.use(
     (config) => {
         NProgess.start();
+        let token=localStorage.getItem('admin-token');
+        if(token){
+            config.headers['Authorization']=`Bearer ${token}`;
+        }
         return config;
     },
     (error) => {

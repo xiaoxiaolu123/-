@@ -6,7 +6,60 @@
         <el-button type="primary" size="default">添加</el-button>
       </div>
       <div class="bottom">
-        
+        <el-table :data="tableData"  stripe >
+          <el-table-column
+            v-for="(col) in columns"
+            :prop="col.id"
+            :key="col.id"
+            :label="col.label"
+            :width="col.width"
+            show-overflow-tooltip
+          >
+            <template slot-scope="scope">
+              <span v-if="col.id=='id'">{{scope.row.id}}</span>
+              <span v-if="col.id=='name'">{{scope.row.name}}</span>
+              <span v-if="col.id=='expire_days'">{{scope.row.expire_days}}</span>
+              <span v-if="col.id=='charge'">{{scope.row.charge}}</span>
+              <el-button v-if="col.id=='cz'"
+                @click="handleClick(scope.row)"
+                type="text"
+                size="middle"
+                class="del"
+                >删除</el-button
+              >
+              <el-button  v-if="col.id=='cz'" type="text" size="middle">编辑</el-button>
+              
+            </template>
+          </el-table-column>
+
+          <!-- <el-table-column fixed prop="id" label="ID" width="150">
+          </el-table-column>
+          <el-table-column prop="name" label="VIP" width="280">
+          </el-table-column>
+          <el-table-column prop="expire_days" label="天数" width="280">
+          </el-table-column>
+          <el-table-column prop="charge" label="价格" width="280">
+          </el-table-column>
+          <el-table-column fixed="right" label="操作" width="160">
+            <template slot-scope="scope">
+              <el-button
+                @click="handleClick(scope.row)"
+                type="text"
+                size="small"
+                >删除</el-button
+              >
+              <el-button type="text" size="small">编辑</el-button>
+            </template>
+          </el-table-column> -->
+        </el-table>
+
+        <!-- <el-table :data="tableData" height="250" border style="width: 100%">
+          <el-table-column prop="date" label="日期" width="180">
+          </el-table-column>
+          <el-table-column prop="name" label="姓名" width="180">
+          </el-table-column>
+          <el-table-column prop="address" label="地址"> </el-table-column>
+        </el-table> -->
       </div>
     </div>
   </div>
@@ -15,13 +68,42 @@
 <script>
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
-
 export default {
   //import引入的组件需要注入到对象中才能使用
   components: {},
   data() {
     //这里存放数据
-    return {};
+    return {
+      tableData: [],
+      columns: [
+        {
+          id: "id",
+          label: "ID",
+          width: "120",
+        },
+        {
+          id: "name",
+          label: "VIP",
+          width: "280",
+        },
+        {
+          id: "expire_days",
+          label: "天数",
+          width: "280",
+        },
+        {
+          id: "charge",
+          label: "价格",
+          width: "280",
+        },
+
+        {
+          id: "cz",
+          label: "操作",
+          width: "160",
+        },
+      ],
+    };
   },
   //监听属性 类似于data概念
   computed: {},
@@ -30,7 +112,10 @@ export default {
   //方法集合
   methods: {},
   //生命周期 - 创建完成（可以访问当前this实例）
-  created() {},
+  async created() {
+    let roleRes = await this.$request.get("/role");
+    this.tableData = roleRes.data.data;
+  },
   //生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {},
   beforeCreate() {}, //生命周期 - 创建之前
@@ -43,9 +128,12 @@ export default {
 };
 </script>
 <style  lang='less' scoped>
+/deep/ .del{
+  color: red;
+}
 .role {
   .meedu-main-body {
-        width: 100%;
+    width: 100%;
     height: auto;
     background-color: #fff;
     box-sizing: border-box;
@@ -55,8 +143,8 @@ export default {
     box-shadow: 0 2px 4px 0 hsl(0deg 0% 40% / 5%);
     min-width: 1180px;
     .top {
-            width: 100%;
-    height: auto;
+      width: 100%;
+      height: auto;
     }
   }
 }

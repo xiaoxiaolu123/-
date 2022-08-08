@@ -30,7 +30,7 @@
         <el-row class="tac">
           <el-col :span="12">
             <el-menu
-              default-active="主页"
+              :default-active="pageName"
               class="el-menu-vertical-demo"
               @select="select"
               :unique-opened="true"
@@ -124,9 +124,8 @@ export default {
   watch: {},
   //方法集合
   methods: {
-    select(key, indexPath) {
+    select(key) {
       this.pageName = key;
-      console.log(key, indexPath);
       switch (key) {
         case "主页":
           this.$router.push("/dashboard");
@@ -171,7 +170,44 @@ export default {
     },
   },
   //生命周期 - 创建完成（可以访问当前this实例）
-  created() {},
+  created() {
+    switch (this.$route.name) {
+        case "Dashboard":
+          this.pageName = "主页";
+          break;
+        case "Role":
+          this.pageName = "VIP会员";
+          break;
+        case "Promocode":
+          this.pageName = "优惠码";
+          break;
+        case "MessagereplyIndex":
+          this.pageName = "公众号";
+          break;
+        case "vodIndex":
+          this.pageName = "录播课";
+          break;
+        case "memberIndex":
+          this.pageName = "学员列表";
+          break;
+        case "orderIndex":
+          this.pageName = "全部订单";
+          break;
+        case "withdrawOrders":
+          this.pageName = "余额提现";
+          break;
+        case "systemAdministrator":
+          this.pageName = "管理人员";
+          break;
+        case "systemIndex":
+          this.pageName = "系统配置";
+          break;
+        case "systemApplication":
+          this.pageName = "功能模块";
+          break;
+        
+      }
+  },
   //生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {},
   beforeCreate() {}, //生命周期 - 创建之前
