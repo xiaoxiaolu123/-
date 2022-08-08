@@ -3,7 +3,7 @@
   <div class="role">
     <div class="meedu-main-body">
       <div class="top">
-        <el-button type="primary" size="default">添加</el-button>
+        <el-button type="primary" size="default" @click="goAdd">添加</el-button>
       </div>
       <div class="bottom">
         <el-table :data="tableData"  stripe >
@@ -31,35 +31,7 @@
               
             </template>
           </el-table-column>
-
-          <!-- <el-table-column fixed prop="id" label="ID" width="150">
-          </el-table-column>
-          <el-table-column prop="name" label="VIP" width="280">
-          </el-table-column>
-          <el-table-column prop="expire_days" label="天数" width="280">
-          </el-table-column>
-          <el-table-column prop="charge" label="价格" width="280">
-          </el-table-column>
-          <el-table-column fixed="right" label="操作" width="160">
-            <template slot-scope="scope">
-              <el-button
-                @click="handleClick(scope.row)"
-                type="text"
-                size="small"
-                >删除</el-button
-              >
-              <el-button type="text" size="small">编辑</el-button>
-            </template>
-          </el-table-column> -->
         </el-table>
-
-        <!-- <el-table :data="tableData" height="250" border style="width: 100%">
-          <el-table-column prop="date" label="日期" width="180">
-          </el-table-column>
-          <el-table-column prop="name" label="姓名" width="180">
-          </el-table-column>
-          <el-table-column prop="address" label="地址"> </el-table-column>
-        </el-table> -->
       </div>
     </div>
   </div>
@@ -110,7 +82,11 @@ export default {
   //监控data中的数据变化
   watch: {},
   //方法集合
-  methods: {},
+  methods: {
+    goAdd:function(){
+      this.$router.push("/addRole")
+    }
+  },
   //生命周期 - 创建完成（可以访问当前this实例）
   async created() {
     let roleRes = await this.$request.get("/role");

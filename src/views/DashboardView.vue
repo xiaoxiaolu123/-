@@ -171,38 +171,39 @@ export default {
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
-    switch (this.$route.name) {
-        case "Dashboard":
+    console.log(this.$route.meta.title)
+    switch (this.$route.meta.title) {
+        case "主页":
           this.pageName = "主页";
           break;
-        case "Role":
+        case "VIP会员":
           this.pageName = "VIP会员";
           break;
-        case "Promocode":
+        case "优惠码":
           this.pageName = "优惠码";
           break;
-        case "MessagereplyIndex":
+        case "公众号":
           this.pageName = "公众号";
           break;
-        case "vodIndex":
+        case "录播课":
           this.pageName = "录播课";
           break;
-        case "memberIndex":
+        case "学员列表":
           this.pageName = "学员列表";
           break;
-        case "orderIndex":
+        case "全部订单":
           this.pageName = "全部订单";
           break;
-        case "withdrawOrders":
+        case "余额提现":
           this.pageName = "余额提现";
           break;
-        case "systemAdministrator":
+        case "管理人员":
           this.pageName = "管理人员";
           break;
-        case "systemIndex":
+        case "系统配置":
           this.pageName = "系统配置";
           break;
-        case "systemApplication":
+        case "功能模块":
           this.pageName = "功能模块";
           break;
         
