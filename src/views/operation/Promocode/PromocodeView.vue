@@ -4,8 +4,8 @@
     <div class="meedu-main-body">
       <div class="top">
         <div class="btnBox">
-          <el-button type="primary" size="danger">批量删除</el-button>
-          <el-button type="primary" size="default">添加</el-button>
+          <el-button type="primary" size="danger" @click="del">批量删除</el-button>
+          <el-button type="primary" size="default" @click="create">添加</el-button>
           <el-button type="primary" size="default">批量导入</el-button>
           <el-button type="primary" size="default">批量生产</el-button>
         </div>
@@ -25,18 +25,18 @@
         <el-drawer title="" :visible.sync="drawer" direction="rtl" size="360px" :show-close="true" :with-header="false">
           <div class="n-padding-box">
             <div class="tlt">更多筛选</div>
-            <el-input v-model="romotionCode" placeholder="优惠码" size="normal" clearable></el-input>
+            <el-input v-model="promotionCode" placeholder="优惠码" size="normal" clearable></el-input>
             <el-input v-model="studentID" placeholder="学员ID" size="normal" clearable></el-input>
 
             <div class="block">
-              <el-date-picker v-model="pastData" type="daterange" range-separator="至" start-placeholder="过期时间-开始"
+              <el-date-picker v-model="passData" type="daterange" range-separator="至" start-placeholder="过期时间-开始"
                 end-placeholder="过期时间-结束">
               </el-date-picker>
             </div>
 
             <div class="block">
               <el-date-picker v-model="addData" type="daterange" unlink-panels range-separator="至"
-                start-placeholder="添加时间-开始" end-placeholder="添加时间-结束" :picker-options="pickerOptions">
+                start-placeholder="添加时间-开始" end-placeholder="添加时间-结束">
               </el-date-picker>
             </div>
             <div class="btn">
@@ -86,12 +86,12 @@
       <div class="page">
         <div class="block">
           <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-            :current-page="currentPage4" :page-sizes="[10, 20, 50, 100]" :page-size="10"
-            layout="total, sizes, prev, pager, next, jumper" :total="total">
+            :page-sizes="[10, 20, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper"
+            :total="total">
           </el-pagination>
         </div>
       </div>
-      
+
     </div>
   </div>
 </template>
@@ -115,6 +115,7 @@ export default {
       size: 10,
       tableData: [],
       total: 0,
+      idList: [],
     };
   },
   //监听属性 类似于data概念
@@ -123,26 +124,49 @@ export default {
   watch: {},
   //方法集合
   methods: {
+    del: function () {
+      this.$request.post('promoCode/delete/multi', {
+        ids: this.idList
+      }).then(() => {
+        this.$request.get('/promoCode', {
+          params: {
+            page: this.page,
+            size: this.size
+          }
+        }).then((res) => {
+          this.tableData = res.data.data;
+        })
+      })
+    },
+    create:function(){
+      this.$router.push("/createcode")
+    },
     handleSizeChange: function (size) {
-      this.size=size;
+      this.size = size;
       this.$request.get('/promoCode', {
         params: {
           page: this.page,
           size: size
         }
-      }).then((res)=>{
+      }).then((res) => {
         this.tableData = res.data.data;
       })
     },
-    handleCurrentChange:function(page){
-      this.page=page;
+    handleCurrentChange: function (page) {
+      this.page = page;
       this.$request.get('/promoCode', {
         params: {
           page: page,
           size: this.size
         }
-      }).then((res)=>{
+      }).then((res) => {
         this.tableData = res.data.data;
+      })
+    },
+    handleSelectionChange: function (e) {
+      this.idList = [];
+      e.forEach((item) => {
+        this.idList.push(item.id);
       })
     }
   },
@@ -156,7 +180,6 @@ export default {
     })
     this.tableData = res.data.data;
     this.total = res.data.total;
-    console.log(this.total)
   },
   //生命周期 - 挂载完成（可以访问DOM元素）
   mounted() { },

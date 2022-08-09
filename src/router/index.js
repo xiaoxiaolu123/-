@@ -21,12 +21,36 @@ const routes = [
     component: () => import('@/views/DashboardView.vue'),
     children: [
       {
+        path: '',
+        name: 'DashboardHome',
+        component: () => import('@/views/HomeView.vue'),
+        meta: {
+          title: '主页',
+        },
+      },
+      {
+        path: 'change-pass',
+        name: 'ChangePass',
+        component: () => import('@/views/ChangePassView.vue'),
+        meta: {
+          title: '修改密码',
+        },
+      },
+      {
         path: '/role',
         name: "Role",
         meta: {
           title: 'VIP会员',
         },
-        component: () => import('@/views/operation/RoleView.vue'),
+        component: () => import('@/views/operation/Role/RoleView.vue'),
+      },
+      {
+        path: '/editrole',
+        name: "editrole",
+        meta: {
+          title: 'VIP会员',
+        },
+        component: () => import('@/views/operation/EditroleView.vue'),
       },
       {
         path: '/promocode',
@@ -34,7 +58,15 @@ const routes = [
         meta: {
           title: '优惠码',
         },
-        component: () => import('@/views/operation/PromocodeView.vue'),
+        component: () => import('@/views/operation/Promocode/PromocodeView.vue'),
+      },
+      {
+        path: '/createcode',
+        name: 'Createcode',
+        meta: {
+          title: '添加优惠码',
+        },
+        component: () => import('@/views/operation/Promocode/CreatecodeView.vue'),
       },
       {
         path: '/wechat/messagereply/index',
@@ -106,7 +138,7 @@ const routes = [
         meta: {
           title: 'VIP会员',
         },
-        component: () => import('@/views/operation/AddRoleView.vue'),
+        component: () => import('@/views/operation/Role/AddRoleView.vue'),
       },
 
     ]

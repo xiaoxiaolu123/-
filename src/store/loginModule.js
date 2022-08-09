@@ -1,45 +1,25 @@
-/*
-    1. 配置请求的url
-    2. 加遮罩
-    3. 对数据或者异常进行统一处理
-*/
-import axios from 'axios';
-import NProgess from 'nprogress';
-import 'nprogress/nprogress.css';
-// 创建好实例
-// console.log(process.env);
-const instance = axios.create({
-  baseURL: process.env.VUE_APP_BASE_URL,
-  timeout: 100000,
-});
+import myAxios from '@/api/instance';
 
-// 配置拦截器
-// 请求拦截器
-instance.interceptors.request.use(
-  (config) => {
-    NProgess.start();
-    let token = localStorage.getItem('admin-token');
-    if (token) {
-      config.headers['Authorization'] = 'Bearer ' + token;
-    }
-    return config;
+const SAVE_USER = 'SAVE_USER';
+const login = {
+  namespaced: true,
+  state: () => ({
+    user: {},
+  }),
+  getters: {},
+  mutations: {
+    [SAVE_USER](state, payload) {
+      state.user = payload;
+    },
   },
-  (error) => {
-    NProgess.done();
-    return Promise.reject(error);
-  }
-);
-// 响应拦截器
-instance.interceptors.response.use(
-  (response) => {
-    // 以服务的方式调用的 Loading 需要异步关闭
-    NProgess.done();
-    return response.data;
+  actions: {
+    // 获取用户的个人信息的
+    getUserInfo: function (store) {
+      myAxios.get('user').then((res) => {
+        // console.log(res);
+        store.commit(SAVE_USER, res.data);
+      });
+    },
   },
-  (error) => {
-    NProgess.done();
-    return Promise.reject(error);
-  }
-);
-
-export default instance;
+};
+export default login;

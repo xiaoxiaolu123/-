@@ -27,7 +27,7 @@
                 class="del"
                 >删除</el-button
               >
-              <el-button  v-if="col.id=='cz'" type="text" size="middle">编辑</el-button>
+              <el-button  v-if="col.id=='cz'" type="text" size="middle" @click="goEditrole(scope.row)">编辑</el-button>
               
             </template>
           </el-table-column>
@@ -83,6 +83,22 @@ export default {
   watch: {},
   //方法集合
   methods: {
+    handleClick:function(e){
+      this.$request.delete('role/'+e.id).then(()=>{
+        this.$request.get("role").then((res)=>{
+          this.tableData = res.data.data;
+        })
+      });
+    },  
+    goEditrole:function(e){
+      console.log(e.id)
+      this.$router.push({
+        path:'/editrole',
+        query:{
+          id:e.id
+        }
+      })
+    },  
     goAdd:function(){
       this.$router.push("/addRole")
     }
