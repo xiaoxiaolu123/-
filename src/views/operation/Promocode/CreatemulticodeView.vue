@@ -1,6 +1,6 @@
 <!--  -->
 <template>
-    <div class="editrole">
+    <div class="createmulticode">
         <div class="meedu-main-body">
             <div class="top">
                 <div class="btn-back" @click="goBack">
@@ -8,46 +8,48 @@
                     返回
                 </div>
                 <div class="line"></div>
-                <div class="name">编辑VIP</div>
+                <div class="name">优惠码批量生成</div>
             </div>
 
             <div class="bottom">
                 <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-                    <el-form-item label="VIP名" prop="name">
-                        <el-input v-model="ruleForm.name" placeholder="VIP名" style="width:200px"></el-input>
-                    </el-form-item>
-
-                    <el-form-item label="天数" prop="days">
-                        <template>
-                            <el-input v-model="ruleForm.expire_days" placeholder="天数" type="number"
-                                style="width:200px;margin-right: 20px;">
-                            </el-input>
-                            <i class="el-icon-info"></i>
-                            <span>决定用户购买VIP之后可享受的天数。</span>
-                        </template>
-                    </el-form-item>
-
-                    <el-form-item label="价格" prop="price">
-                        <template>
-                            <el-input v-model="ruleForm.charge" type="number" placeholder="价格"
-                                style="width:200px;margin-right: 20px;">
-                            </el-input>
-                            <i class="el-icon-info"></i>
-                            <span>请输入整数</span>
-                        </template>
-                    </el-form-item>
-
-                    <el-form-item label="显示" prop="delivery">
-                        <el-switch v-model="ruleForm.is_show" style="margin-right: 20px;"></el-switch>
-                        <i class="el-icon-info"></i>
-                        <span>控制用户手否能够看到并购买该VIP</span>
-                    </el-form-item>
-
-                    <el-form-item label="描述" prop="desc">
-                        <el-input type="textarea" v-model="ruleForm.description"
-                            style="width:400px;min-height: 33px;height: 120px;" :autosize="{ minRows: 5, maxRows: 10 }">
+                    <el-form-item label="统一前缀" prop="prefix">
+                        <el-input v-model="ruleForm.prefix" placeholder="前缀" style="margin-right: 20px;width:200px">
                         </el-input>
                     </el-form-item>
+
+                    <el-form-item label="到期时间" required>
+                        <el-col :span="11">
+                            <el-form-item prop="expired_at">
+                                <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.expired_at"
+                                    style="margin-right: 20px;width: 200px;display: inline-block;"></el-date-picker>
+                                <i class="el-icon-info"></i>
+                                <span>该字段决定优惠码的有效期限，到了选定的时间就无法使用了。</span>
+                            </el-form-item>
+                        </el-col>
+                    </el-form-item>
+
+
+                    <el-form-item label="生产数量" prop="num">
+                        <el-input v-model="ruleForm.num" placeholder="生产数量" type="number" style="margin-right: 20px;width:200px">
+                        </el-input>
+                        <i class="el-icon-info"></i>
+                        <span>请输入整数。为防止系统卡顿导致生成失败，请勿输入超过1000的数字。</span>
+                    </el-form-item>
+
+
+                    <el-form-item label="面值" prop="money">
+                        <template>
+                            <el-input v-model="ruleForm.money" type="number" placeholder="面值"
+                                style="width:200px;margin-right: 20px;">
+                            </el-input>
+                            <i class="el-icon-info"></i>
+                            <span>请输入整数。不支持小数。可在收银台抵扣的金额。</span>
+                        </template>
+                    </el-form-item>
+
+   
+
                 </el-form>
             </div>
 
@@ -71,16 +73,36 @@ export default {
     data() {
         //这里存放数据
         return {
-            id: '',
             rules: {
-                name: [
-                    { required: true, message: 'VIP名不能为空', trigger: 'blur' },
+                prefix: [
+                    { required: true, message: '前缀不能为空', trigger: 'blur' },
                 ],
-                days: [
-                    { required: true, message: '天数不能为空', trigger: 'blur' },
+                expired_at: [
+                    { required: true, message: '到期日期不能为空', trigger: 'blur' },
+                ],
+                money: [
+                    { required: true, message: '面值不能为空', trigger: 'blur' }
+                ],
+                num: [
+                    { required: true, message: '生成数量不能为空', trigger: 'blur' }
                 ]
             },
-            ruleForm: {}
+            ruleForm: {
+                prefix: '',
+                expired_at: "",
+                money: '',
+                num: '',
+            },
+            GMTToStr(time) {
+                let date = new Date(time)
+                let Str = date.getFullYear() + '-' +
+                    (date.getMonth() + 1) + '-' +
+                    date.getDate() + ' ' +
+                    date.getHours() + ':' +
+                    date.getMinutes() + ':' +
+                    date.getSeconds()
+                return Str
+            }
         };
     },
     //监听属性 类似于data概念
@@ -89,14 +111,18 @@ export default {
     watch: {},
     //方法集合
     methods: {
+
         goBack: function () {
             this.$router.go(-1);
         },
         save: function () {
-            this.ruleForm.is_show = this.ruleForm.is_show ? 1 : 0;
-            this.$request.put("/role/" + this.id, this.ruleForm).then((res) => {
+
+            this.ruleForm.expired_at =this.GMTToStr(this.ruleForm.expired_at);
+            this.$request.post("/promoCode/generator", this.ruleForm).then((res) => {
                 if (res.status == 0) {
-                    this.$router.push('/role')
+                    this.$router.go(-1);
+                } else {
+                    this.$message.error(res.message);
                 }
             })
         },
@@ -106,12 +132,7 @@ export default {
     },
 
     //生命周期 - 创建完成（可以访问当前this实例）
-    async created() {
-        this.id = this.$route.query.id
-        let res = await this.$request.get('role/' + this.id);
-        this.ruleForm = res.data;
-        this.ruleForm.is_show = this.ruleForm.is_show == 1 ? true : false;
-    },
+    created() { },
     //生命周期 - 挂载完成（可以访问DOM元素）
     mounted() { },
     beforeCreate() { }, //生命周期 - 创建之前
@@ -124,7 +145,7 @@ export default {
 };
 </script>
 <style  lang='less' scoped>
-.editrole {
+.createmulticode {
     .meedu-main-body {
         width: 100%;
         height: auto;

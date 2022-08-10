@@ -93,7 +93,7 @@ export default {
     goEditrole:function(e){
       console.log(e.id)
       this.$router.push({
-        path:'/editrole',
+        path:'/editRole',
         query:{
           id:e.id
         }
