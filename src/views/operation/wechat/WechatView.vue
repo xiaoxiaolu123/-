@@ -25,17 +25,29 @@
             </el-table-column>
             <el-table-column label="匹配规则" width="500">
               <template slot-scope="scope">
-                {{ scope.row.type}}@{{ scope.row.rule }}{{scope.row.event_type!=''?scope.row.event_type+':':''}}{{scope.row.event_key}}
+                {{ scope.row.type }}@{{ scope.row.rule
+                }}{{
+                  scope.row.event_type != "" ? scope.row.event_type + ":" : ""
+                }}{{ scope.row.event_key }}
               </template>
             </el-table-column>
             <el-table-column prop="reply_content" label="回复内容" width="500">
             </el-table-column>
             <el-table-column label="操作" width="100">
-              <template>
-                <el-button type="text" size="middle" class="del"
+              <template slot-scope="scope">
+                <el-button
+                  type="text"
+                  size="middle"
+                  class="del"
+                  @click="del(scope.row.id)"
                   >删除</el-button
                 >
-                <el-button type="text" size="middle">编辑</el-button>
+                <el-button
+                  type="text"
+                  size="middle"
+                  @click="update(scope.row.id)"
+                  >编辑</el-button
+                >
               </template>
             </el-table-column>
           </el-table>
@@ -81,8 +93,47 @@ export default {
   watch: {},
   //方法集合
   methods: {
+    del(e) {
+      this.$confirm("确定操作?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          this.$request.delete("/mpWechatMessageReply/" + e).then(() => {
+            this.$message({
+              type: "success",
+              message: "删除成功!",
+            });
+            this.$request
+              .get("/mpWechatMessageReply", {
+                params: {
+                  page: this.page,
+                  size: this.size,
+                },
+              })
+              .then((res) => {
+                this.tableData = res.data.data.data;
+              });
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
+    },
+    update: function (e) {
+      this.$router.push({
+        path: "/wechat/messagereply/update",
+        query: {
+          id: e,
+        },
+      });
+    },
     goCreate: function () {
-        this.$router.push("/wechat/messagereply/create")
+      this.$router.push("/wechat/messagereply/create");
     },
     handleSizeChange: function (size) {
       this.size = size;

@@ -390,6 +390,15 @@ const routes = [
           title: '新建自动回复',
         },
       },
+      {
+        path: '/wechat/messagereply/update',
+        name: 'MessagereplyUpdate',
+        component: () => import('@/views/operation/wechat/MessagereplyUpdateView.vue'),
+        meta: {
+          fatherPath: '/operate/message',
+          title: '新建自动回复',
+        },
+      },
     ],
   },
 
