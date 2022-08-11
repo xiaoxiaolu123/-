@@ -279,24 +279,22 @@ export default {
             this.tableData = res.data.data;
           });
       } else {
-        
-          this.$request
-            .get("/promoCode", {
-              params: {
-                user_id: this.studentID,
-                key: this.promotionCode,
-                "created_at[0]": this.created_at[0].toISOString(),
-                "created_at[1]": this.created_at[1].toISOString(),
-                "expired_at[0]": this.expired_at[0].toISOString(),
-                "expired_at[1]": this.expired_at[1].toISOString(),
-                page: this.page,
-                size: this.size,
-              },
-            })
-            .then((res) => {
-              this.tableData = res.data.data;
-            });
-        
+        this.$request
+          .get("/promoCode", {
+            params: {
+              user_id: this.studentID,
+              key: this.promotionCode,
+              "created_at[0]": this.created_at[0].toISOString(),
+              "created_at[1]": this.created_at[1].toISOString(),
+              "expired_at[0]": this.expired_at[0].toISOString(),
+              "expired_at[1]": this.expired_at[1].toISOString(),
+              page: this.page,
+              size: this.size,
+            },
+          })
+          .then((res) => {
+            this.tableData = res.data.data;
+          });
       }
     },
     handleSelectionChange: function (e) {
@@ -322,11 +320,13 @@ export default {
           this.tableData.forEach((item) => {
             item.created_at = this.GMTToStr(item.created_at);
           });
+          this.isMore = false;
         });
     },
     clearFilter: function () {
       this.$request.get("promoCode").then((res) => {
         this.tableData = res.data.data;
+
         this.total = this.total = res.data.total;
         this.promotionCode = "";
         this.studentID = "";
@@ -334,7 +334,6 @@ export default {
         this.created_at = "";
         this.expired_at = "";
         this.page = 1;
-        this.tableData = [];
         this.fStatus = true;
         this.tableData.forEach((item) => {
           item.created_at = this.GMTToStr(item.created_at);

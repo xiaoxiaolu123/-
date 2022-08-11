@@ -381,6 +381,15 @@ const routes = [
           title: '公众号',
         },
       },
+      {
+        path: '/wechat/messagereply/create',
+        name: 'OperateMessage',
+        component: () => import('@/views/operation/wechat/MessagereplyCreateView.vue'),
+        meta: {
+          fatherPath: '/operate/message',
+          title: '新建自动回复',
+        },
+      },
     ],
   },
 

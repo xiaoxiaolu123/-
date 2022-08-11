@@ -54,8 +54,6 @@
             <div class="bottom-menus-box">
                 <el-button type="primary" size="default" @click="save">保存</el-button>
                 <el-button size="default" @click="cancel">取消</el-button>
-
-
             </div>
         </div>
     </div>

@@ -77,6 +77,9 @@ export default {
                 ],
                 days: [
                     { required: true, message: '天数不能为空', trigger: 'blur' },
+                ],
+                desc:[
+                    { required: true, message: '描述不能为空', trigger: 'blur' },
                 ]
             },
             ruleForm: {
