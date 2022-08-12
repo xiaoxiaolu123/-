@@ -3,174 +3,6 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
-// const routes = [
-//   {
-//     path: '/',
-//     name: 'Login',
-//     meta: {
-//       title: '登录',
-//     },
-//     component: () => import('@/views/LoginView.vue'),
-//   },
-//   {
-//     path: '/dashboard',
-//     name: 'Dashboard',
-//     meta: {
-//       title: '主页',
-//     },
-//     component: () => import('@/views/DashboardView.vue'),
-//     children: [
-//       {
-//         path: '',
-//         name: 'DashboardHome',
-//         component: () => import('@/views/HomeView.vue'),
-//         meta: {
-//           title: '主页',
-//         },
-//       },
-//       {
-//         path: 'change-pass',
-//         name: 'ChangePass',
-//         component: () => import('@/views/ChangePassView.vue'),
-//         meta: {
-//           title: '修改密码',
-//         },
-//       },
-//       {
-//         path: '/role',
-//         name: "Role",
-//         meta: {
-//           title: 'VIP会员',
-//         },
-//         component: () => import('@/views/operation/Role/RoleView.vue'),
-//       },
-//       {
-//         path: '/addRole',
-//         name: "addRole",
-//         meta: {
-//           title: 'VIP会员',
-//         },
-//         component: () => import('@/views/operation/Role/AddRoleView.vue'),
-//       },
-//       {
-//         path: '/editrole',
-//         name: "editrole",
-//         meta: {
-//           title: 'VIP会员',
-//         },
-//         component: () => import('@/views/operation/Role/EditroleView.vue'),
-//       },
-//       {
-//         path: '/promocode',
-//         name: 'Promocode',
-//         meta: {
-//           title: '优惠码',
-//         },
-//         component: () => import('@/views/operation/Promocode/PromocodeView.vue'),
-//       },
-//       {
-//         path: '/createcode',
-//         name: 'Createcode',
-//         meta: {
-//           title: '添加优惠码',
-//         },
-//         component: () => import('@/views/operation/Promocode/CreatecodeView.vue'),
-//       },
-//       {
-//         path: '/createmulticode',
-//         name: 'Createmulticode',
-//         meta: {
-//           title: '优惠码批量生成',
-//         },
-//         component: () => import('@/views/operation/Promocode/CreatemulticodeView.vue'),
-//       },
-//       {
-//         path: '/wechat/messagereply/index',
-//         name: 'MessagereplyIndex',
-//         meta: {
-//           title: '公众号',
-//         },
-//         component: () => import('@/views/operation/wechat/WechatView.vue'),
-//       },
-//       {
-//         path: '/course/vod/index',
-//         name: 'vodIndex',
-//         meta: {
-//           title: '录播课',
-//         },
-//         component: () => import('@/views/course/IndexView.vue'),
-//       },
-//       {
-//         path: '/member/index',
-//         name: 'memberIndex',
-//         meta: {
-//           title: '学员列表',
-//         },
-//         component: () => import('@/views/member/IndexView.vue'),
-//       },
-//       {
-//         path: '/order/index',
-//         name: 'orderIndex',
-//         meta: {
-//           title: '全部订单',
-//         },
-//         component: () => import('@/views/order/IndexView.vue'),
-//       },
-//       {
-//         path: '/withdrawOrders',
-//         name: 'withdrawOrders',
-//         meta: {
-//           title: '余额提现',
-//         },
-//         component: () => import('@/views/order/WithdrawOrdersView.vue'),
-//       },
-//       {
-//         path: '/system/administrator',
-//         name: 'systemAdministrator',
-//         meta: {
-//           title: '管理人员',
-//         },
-//         component: () => import('@/views/system/AdministratorView.vue'),
-//       },
-//       {
-//         path: '/system/index',
-//         name: 'systemIndex',
-//         meta: {
-//           title: '系统配置',
-//         },
-//         component: () => import('@/views/system/IndexView.vue'),
-//       },
-//       {
-//         path: '/system/application',
-//         name: 'systemApplication',
-//         meta: {
-//           title: '功能模块',
-//         },
-//         component: () => import('@/views/system/ApplicationView.vue'),
-//       }, 
-
-//     ]
-//   },
-//   {
-//     path: '/about',
-//     name: 'about',
-//     // route level code-splitting
-//     // this generates a separate chunk (about.[hash].js) for this route
-//     // which is lazy-loaded when the route is visited.
-//     component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-//   },
-//   {
-//     path: '/decoration/pc',
-//     name: 'pc',
-//     component: () => import('@/views/decoration/PcView.vue')
-//   },
-//   {
-//     path: '/decoration/h5',
-//     name: 'h5',
-//     component: () => import('@/views/decoration/H5View.vue')
-//   }
-// ]
-
 const routes = [
   {
     path: '/',
@@ -396,7 +228,16 @@ const routes = [
         component: () => import('@/views/operation/wechat/MessagereplyUpdateView.vue'),
         meta: {
           fatherPath: '/operate/message',
-          title: '新建自动回复',
+          title: '编辑自动回复',
+        },
+      },
+      {
+        path: '/decoration/mp-wechat-menu',
+        name: 'WechatMenu',
+        component: () => import('@/views/operation/wechat/WechatMenuView.vue'),
+        meta: {
+          fatherPath: '/operate/message',
+          title: '编辑自动回复',
         },
       },
     ],
@@ -412,7 +253,7 @@ const routes = [
       {
         path: '/system/system-administrator',
         name: 'system-administrator',
-        component: () => import('@/views/system/AdministratorView.vue'),
+        component: () => import('@/views/HomeView.vue'),
         meta: {
           fatherPath: '/system/system-administrator',
           title: '管理人员',

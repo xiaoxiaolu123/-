@@ -2,14 +2,7 @@
 <template>
   <div class="create">
     <div class="meedu-main-body">
-      <div class="top">
-        <div class="btn-back" @click="goBack">
-          <i class="el-icon-back"></i>
-          返回
-        </div>
-        <div class="line"></div>
-        <div class="name">编辑VIP</div>
-      </div>
+      <top-vue title="新建自动回复"></top-vue>
 
       <div class="bottom">
         <el-form
@@ -58,7 +51,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-              <el-form-item label="事件Key" v-if="ruleForm.type != 'text'">
+          <el-form-item label="事件Key" v-if="ruleForm.type != 'text'">
             <el-input
               style="width: 400px; margin-right: 20px"
               v-model="ruleForm.event_key"
@@ -92,10 +85,10 @@
 <script>
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
-
+import TopVue from "@/components/Top.vue";
 export default {
   //import引入的组件需要注入到对象中才能使用
-  components: {},
+  components: { TopVue },
   data() {
     //这里存放数据
     return {
@@ -119,23 +112,19 @@ export default {
           label: "自定义菜单事件",
         },
       ],
-      
+
       rules: {
         name: [{ required: true, trigger: "blur" }],
-        reply_content: [
-          { required: true, message: "回复内容不能为空" },
-        ]
+        reply_content: [{ required: true, message: "回复内容不能为空" }],
       },
       keyword: "",
       ruleForm: {
         event_type: "",
-      event_key:'',
-      reply_content:'',
-      rule:'',
-      type: "text",
-
+        event_key: "",
+        reply_content: "",
+        rule: "",
+        type: "text",
       },
-      
     };
   },
   //监听属性 类似于data概念
@@ -147,14 +136,14 @@ export default {
     goBack: function () {
       this.$router.go(-1);
     },
-    cancel:function(){
-        this.$router.go(-1);
+    cancel: function () {
+      this.$router.go(-1);
     },
-    save:function(){
-        this.$request.post('mpWechatMessageReply',this.ruleForm).then(()=>{
-            this.$router.push('/operate/message')
-        })
-    }
+    save: function () {
+      this.$request.post("mpWechatMessageReply", this.ruleForm).then(() => {
+        this.$router.push("/operate/message");
+      });
+    },
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {},
