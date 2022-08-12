@@ -13,9 +13,8 @@
 
       <div class="user-import-box">
         <div class="btn">
-          <el-button type="primary" size="default">
+          <el-button type="primary" size="default" @click="choiceFile">
             选择Excel表格文件
-            <!-- <input type="file" name="" id=""> -->
           </el-button>
 
           <a href="https://www.yuque.com/meedu/fvvkbf/lpwsry">
@@ -23,19 +22,13 @@
           </a>
         </div>
         <div class="inp">
-          <div>
-            <form action="">
+          <div style="display: none">
+            <form ref="form" action="">
               <input
                 type="file"
                 name=""
                 id=""
-                @click="
-                  (e) => {
-                    e.target.value = '';
-                  }
-                "
-                ref="file"
-                @change="uploading()"
+                ref="xlsfile"
                 accept=".xls,.xlsx"
               />
             </form>
@@ -72,57 +65,89 @@ export default {
     handlePreview: function (e) {
       console.log(e);
     },
-    uploading: function (e) {
-      let that = this;
-      const files = this.$refs.file.files[0];
-        console.log(files)
-    //   if (files.length < 1) {
-    //     return false;
-    //   } else if (!/\.(xls|xlsx)$/.test(files[0].name.toLowerCase())) {
-    //     this.$toast("上传文件格式不正确，请上传xls或者xlsx格式");
-    //     return false;
-    //   }
+    choiceFile() {
+      this.$refs.xlsfile.click();
+    },
+    handleFile(e) {
+      // 处理文件
+      let files = e.target.files;
+      if (files.length === 0) {
+        this.$message.error("请选择文件");
+        return;
+      }
+      let f = files[0];
+      // 文件扩展名检测
+      let extension = f.name.split(".");
+      extension = extension[extension.length - 1];
+      if (extension !== "xlsx") {
+        this.$message.error("请选择xlsx文件");
+        return;
+      }
 
-      const fileReader = new FileReader();
-    //   console.log(XLSX.utils.sheet_to_json(files))
-      fileReader.onload = (ev) => {
-        try {
-          const data = ev.target.result;
-          const workbook = XLSX.read(data, {
-            type: "binary",
-          });
-          console.log(workbook)
-          const wsname = workbook.SheetNames[0]; // 取第一张表
-          const ws = XLSX.utils.sheet_to_json(workbook.Sheets[wsname]); // 生成json                 表格内容
-          console.log(ws);
-          that.outputs = [];
-          // 编辑数据
-          for (let i = 0; i < ws.length; i++) {
-            let sheetData = ws[i]; // 对数据自行操作
-            that.outputs.push(sheetData);
-          }
-        } catch (e) {
-            
-          return false;
+      // 读取数据
+      let reader = new FileReader();
+      reader.onload = (e) => {
+        let data = new Uint8Array(e.target.result);
+        let workbook = XLSX.read(data, { type: "array", cellDates: true });
+        let parseData = this.parseData(workbook);
+        // parseData.splice(0, 1);
+        if (parseData.length === 0) {
+          this.$message.error("数据为空");
+          return;
         }
+
+        this.loading = true;
+
+        // 请求导入api
+       
+
+        this.$request.post('/promoCode/import',{ data: parseData })
+          .then((res) => {
+            if(res.status==0){
+              this.$message.success("导入成功");
+              this.$router.back();
+            }else{
+              this.$message({
+                showClose: true,
+          message: res.message,
+          type: 'error'
+              })
+            }
+            
+          })
+          .catch((e) => {
+            this.loading = false;
+            this.$message({
+              showClose: true,
+              message: e.message,
+              type: "error",
+              duration: 0,
+            });
+          });
       };
-      fileReader.readAsBinaryString(files);
-      console.log(this.outputs);
-      //   this.$request
-      //     .post("promoCode/import", {
-      //       data: filedata,
-      //     })
-      //     .then((res) => {
-      //       if (res.status == 0) {
-      //         this.$router.go(-1);
-      //       }
-      //     });
+      reader.readAsArrayBuffer(f);
+    },
+    parseData(workbook) {
+      let data = [];
+      workbook.SheetNames.forEach(function (sheetName) {
+        var roa = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {
+          header: 1,
+        });
+        if (roa.length) {
+          data.push(...roa);
+        }
+      });
+      return data;
     },
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {},
   //生命周期 - 挂载完成（可以访问DOM元素）
-  mounted() {},
+  mounted() {
+    this.$nextTick(() => {
+      this.$refs.xlsfile.addEventListener("change", this.handleFile, false);
+    });
+  },
   beforeCreate() {}, //生命周期 - 创建之前
   beforeMount() {}, //生命周期 - 挂载之前
   beforeUpdate() {}, //生命周期 - 更新之前

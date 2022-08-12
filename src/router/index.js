@@ -396,7 +396,7 @@ const routes = [
         component: () => import('@/views/operation/wechat/MessagereplyUpdateView.vue'),
         meta: {
           fatherPath: '/operate/message',
-          title: '新建自动回复',
+          title: '编辑自动回复',
         },
       },
     ],
@@ -411,7 +411,7 @@ const routes = [
       {
         path: '/system/system-administrator',
         name: 'system-administrator',
-        component: () => import('@/views/system/AdministratorView.vue'),
+        component: () => import('@/views/HomeView.vue'),
         meta: {
           fatherPath: '/system/system-administrator',
           title: '管理人员',
