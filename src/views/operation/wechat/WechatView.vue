@@ -6,7 +6,7 @@
         <el-button type="primary" size="default" @click="goCreate"
           >新建自动回复</el-button
         >
-        <el-button type="primary" size="default">公众号菜单</el-button>
+        <el-button type="primary" size="default" @click="goMenu">公众号菜单</el-button>
         <div class="options-link">
           <div class="link">
             <img
@@ -93,6 +93,9 @@ export default {
   watch: {},
   //方法集合
   methods: {
+    goMenu:function(){
+      this.$router.push('/decoration/mp-wechat-menu')
+    },
     del(e) {
       this.$confirm("确定操作?", "提示", {
         confirmButtonText: "确定",

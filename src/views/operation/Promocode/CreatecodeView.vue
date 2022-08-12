@@ -2,14 +2,7 @@
 <template>
     <div class="createcode">
         <div class="meedu-main-body">
-            <div class="top">
-                <div class="btn-back" @click="goBack">
-                    <i class="el-icon-back"></i>
-                    返回
-                </div>
-                <div class="line"></div>
-                <div class="name">添加优惠码</div>
-            </div>
+            <top-vue title="添加优惠码"></top-vue>
 
             <div class="bottom">
                 <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
@@ -68,10 +61,10 @@
 <script>
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
-
+import TopVue from '@/components/Top.vue';
 export default {
     //import引入的组件需要注入到对象中才能使用
-    components: {},
+    components: {TopVue },
     data() {
         //这里存放数据
         return {
@@ -161,34 +154,7 @@ export default {
         box-shadow: 0 2px 4px 0 hsl(0deg 0% 40% / 5%);
         min-width: 1180px;
 
-        .top {
-            display: flex;
-            align-items: center;
-            width: 100%;
-            height: auto;
-            margin-bottom: 30px;
 
-            .btn-back {
-                font-size: 14px;
-                font-weight: 400;
-                color: #333;
-                cursor: pointer;
-            }
-
-            .line {
-                width: 1px;
-                height: 14px;
-                background-color: #d8d8d8;
-                margin-right: 15px;
-                margin-left: 15px;
-            }
-
-            .name {
-                font-size: 14px;
-                font-weight: 600;
-                color: #333;
-            }
-        }
 
         .bottom-menus-box {
             position: fixed;

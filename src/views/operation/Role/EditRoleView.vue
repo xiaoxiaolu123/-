@@ -2,14 +2,7 @@
 <template>
     <div class="editrole">
         <div class="meedu-main-body">
-            <div class="top">
-                <div class="btn-back" @click="goBack">
-                    <i class="el-icon-back"></i>
-                    返回
-                </div>
-                <div class="line"></div>
-                <div class="name">编辑VIP</div>
-            </div>
+            <top-vue title="编辑会员"></top-vue>
 
             <div class="bottom">
                 <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
@@ -62,10 +55,10 @@
 <script>
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
-
+import TopVue from '@/components/Top.vue';
 export default {
     //import引入的组件需要注入到对象中才能使用
-    components: {},
+    components: {TopVue},
     data() {
         //这里存放数据
         return {
@@ -95,6 +88,8 @@ export default {
             this.$request.put("/role/" + this.id, this.ruleForm).then((res) => {
                 if (res.status == 0) {
                     this.$router.go(-1);
+                }else{
+                    this.$message.error(res.message);
                 }
             })
         },

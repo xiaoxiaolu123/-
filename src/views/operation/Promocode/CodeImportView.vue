@@ -1,16 +1,9 @@
-<!--  -->
+<!-- 优惠码批量生成 -->
 <template>
   <div class="codeImport">
     <div class="meedu-main-body">
-      <div class="top">
-        <div class="btn-back" @click="goBack">
-          <i class="el-icon-back"></i>
-          返回
-        </div>
-        <div class="line"></div>
-        <div class="name">优惠码批量生成</div>
-      </div>
-
+     
+      <top-vue title="优惠码批量生成"></top-vue>
       <div class="user-import-box">
         <div class="btn">
           <el-button type="primary" size="default" @click="choiceFile">
@@ -43,10 +36,10 @@
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
 import XLSX from "xlsx";
-
+import TopVue from "@/components/Top.vue";
 export default {
   //import引入的组件需要注入到对象中才能使用
-  components: {},
+  components: {TopVue},
   data() {
     //这里存放数据
     return {
@@ -89,28 +82,28 @@ export default {
       reader.onload = (e) => {
         let data = new Uint8Array(e.target.result);
         let workbook = XLSX.read(data, { type: "array", cellDates: true });
+        //将表格数据切片分页
         let parseData = this.parseData(workbook);
         // parseData.splice(0, 1);
+
         if (parseData.length === 0) {
           this.$message.error("数据为空");
           return;
         }
-
         this.loading = true;
-
-        // 请求导入api
-       
-
         this.$request.post('/promoCode/import',{ data: parseData })
           .then((res) => {
             if(res.status==0){
               this.$message.success("导入成功");
               this.$router.back();
             }else{
+              this.$refs.xlsfile.value='';
+
+              this.loading = false;
               this.$message({
                 showClose: true,
-          message: res.message,
-          type: 'error'
+                message: res.message,
+                type: 'error'
               })
             }
             
@@ -170,34 +163,7 @@ export default {
     box-shadow: 0 2px 4px 0 hsl(0deg 0% 40% / 5%);
     min-width: 1180px;
 
-    .top {
-      display: flex;
-      align-items: center;
-      width: 100%;
-      height: auto;
-      margin-bottom: 30px;
 
-      .btn-back {
-        font-size: 14px;
-        font-weight: 400;
-        color: #333;
-        cursor: pointer;
-      }
-
-      .line {
-        width: 1px;
-        height: 14px;
-        background-color: #d8d8d8;
-        margin-right: 15px;
-        margin-left: 15px;
-      }
-
-      .name {
-        font-size: 14px;
-        font-weight: 600;
-        color: #333;
-      }
-    }
 
     .user-import-box {
       position: relative;
