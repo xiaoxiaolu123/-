@@ -407,6 +407,7 @@ const routes = [
     path: '/system',
     name: 'System',
     component: () => import('@/views/DashboardView.vue'),
+
     children: [
       {
         path: '/system/system-administrator',
@@ -416,7 +417,9 @@ const routes = [
           fatherPath: '/system/system-administrator',
           title: '管理人员',
         },
+        
       },
+      
       {
         path: '/system/config',
         name: 'system-config',
@@ -426,6 +429,15 @@ const routes = [
         path: '/system/system-application',
         name: 'system-application',
         component: () => import('@/views/HomeView.vue'),
+      },
+      {
+        path: '/system/system-administrator/create',
+        name: 'create',
+        component: () => import('@/views/system/CreateView.vue'),
+        meta: {
+          fatherPath: '/system/create',
+          title: '添加管理员',
+        },
       },
     ],
   },

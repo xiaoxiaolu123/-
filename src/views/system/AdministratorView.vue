@@ -1,52 +1,38 @@
-<!--  -->
 <template>
-   <div>
-       <el-table
-    :data="tableData"
-    style="width: 100%">
-    <el-table-column
-      label="日期"
-      width="180">
-      <template slot-scope="scope">
-        <i class="el-icon-time"></i>
-        <span style="margin-left: 10px">{{ scope.row.date }}</span>
-      </template>
-    </el-table-column>
-    <el-table-column
-      label="姓名"
-      width="180">
-      <template slot-scope="scope">
-        <el-popover trigger="hover" placement="top">
-          <p>姓名: {{ scope.row.name }}</p>
-          <p>住址: {{ scope.row.address }}</p>
-          <div slot="reference" class="name-wrapper">
-            <el-tag size="medium">{{ scope.row.name }}</el-tag>
-          </div>
-        </el-popover>
-      </template>
-    </el-table-column>
-    <el-table-column label="操作">
-      <template slot-scope="scope">
-        <el-button
-          size="mini"
-          @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-        <el-button
-          size="mini"
-          type="danger"
-          @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-      </template>
-    </el-table-column>
-  </el-table>         
-
-        <el-pagination
-    layout="prev, pager, next"
-    :total="1000">
-  </el-pagination>
-
-   </div>
-      
-  
-  
+    <div class="box">
+        <div class="float-left mb-30">
+            <button type="button" class="el-button el-button--primary" @click.stop="Routing"><!----><!----><span>添加</span></button>
+            <el-table :data="tableData" style="width: 100%">
+                <el-table-column prop="id" label="ID" width="120"> </el-table-column>
+                <el-table-column prop="name" label="姓名" width="200"> </el-table-column>
+                <el-table-column prop="email" label="登录邮箱" width="220"> </el-table-column>
+                <el-table-column sortable prop="last_login_date" label="登录日志" width="473">
+                    <template slot-scope="scope">
+                        <div>{{ tableData[scope.$index].last_login_date }}/{{ tableData[scope.$index].last_login_ip }}</div>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="is_ban_login" :formatter="noticeFormat" label="禁止登录" width="130"> </el-table-column>
+                <el-table-column prop="" label="操作" width="100">
+                    <template slot-scope="scope">
+                        <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                        <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <div class="footer">
+                <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="currentPage"
+                    :page-sizes="[10, 20, 50, 100]"
+                    :page-size="10"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="total"
+                >
+                </el-pagination>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -59,27 +45,59 @@ export default {
     data() {
         //这里存放数据
         return {
-            currentPage1: 5,
-            currentPage2: 5,
-            currentPage3: 5,
-            currentPage4: 4,
+            currentPage: 1,
+            tableData: [],
+            loading: true,
+            total: null,
+
+            num: {
+                page: 1,
+                size: 10,
+                sort: "id",
+                order: "desc",
+            },
         };
     },
     //监听属性 类似于data概念
     computed: {},
     //监控data中的数据变化
     watch: {},
-    //方法集合
+    //方法集合{}
     methods: {
-        handleSizeChange(val) {
-            console.log(`每页 ${val} 条`);
+        Routing() {
+            this.$router.push({
+                path: "/system/system-administrator/create",
+            });
         },
-        handleCurrentChange(val) {
-            console.log(`当前页: ${val}`);
+        noticeFormat(tableData, column) {
+            if (tableData.is_ban_login == 0) {
+                return "否";
+            } else {
+                return "是";
+            }
+        },
+        async getParameters(params) {
+            let arr = await this.$request.get("administrator", { params }).then((res) => {
+                console.log(JSON.parse(JSON.stringify(res.data)));
+                this.tableData = res.data.data;
+                this.total = res.data.total;
+            });
+        },
+
+        handleSizeChange(val) {
+            this.getParameters(this.num);
+            this.num.size = val;
+        },
+        handleCurrentChange(page) {
+            this.num.page = page;
+            this.getParameters(this.num);
+            this.num.size = val;
         },
     },
     //生命周期 - 创建完成（可以访问当前this实例）
-    created() {},
+    created() {
+        this.getParameters(this.num);
+    },
     //生命周期 - 挂载完成（可以访问DOM元素）
     mounted() {},
     beforeCreate() {}, //生命周期 - 创建之前
@@ -91,4 +109,50 @@ export default {
     activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
 };
 </script>
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.box {
+    width: 100%;
+    height: auto;
+    float: left;
+    background-color: #fff;
+    box-sizing: border-box;
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 90px;
+    box-shadow: 0 2px 4px 0 hsl(0deg 0% 40% / 5%);
+    min-width: 1180px;
+    .el-button {
+        margin-bottom: 30px;
+    }
+    /deep/th.el-table__cell {
+        background: #f1f2f9;
+        height: 70px;
+        font-weight: 1200;
+        font-size: 16px;
+    }
+    /deep/.el-button--mini {
+        font-size: 14px;
+        padding: 0;
+        border: 0;
+        transform: translateY(14px);
+        //  padding-top: 10px;
+        color: #409eff;
+        cursor: pointer;
+        font-weight: 400;
+        box-sizing: border-box;
+    }
+    /deep/.el-table__cell {
+        padding: 2px 0;
+        font-size: 16px;
+        font-weight: 500;
+    }
+    /deep/.el-button--danger {
+        color: red;
+        background: beige;
+    }
+    .footer {
+        text-align: center;
+        margin-top: 40px;
+    }
+}
+</style>

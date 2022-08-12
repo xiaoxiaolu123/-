@@ -4,6 +4,7 @@
     3. 对数据或者异常进行统一处理
 */
 import axios from 'axios';
+import { Loading } from 'element-ui';
 import NProgess from 'nprogress';
 import 'nprogress/nprogress.css';
 // 创建好实例
@@ -17,7 +18,10 @@ const instance = axios.create({
 // 请求拦截器
 instance.interceptors.request.use(
   (config) => {
-    NProgess.start();
+    NProgess.start({
+
+    });
+    // Loading
     let token = localStorage.getItem('admin-token');
     if (token) {
       config.headers['Authorization'] = 'Bearer ' + token;
@@ -33,11 +37,13 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   (response) => {
     // 以服务的方式调用的 Loading 需要异步关闭
-    NProgess.done();
+    // NProgess.done();
+    // Loading.close();
     return response.data;
   },
   (error) => {
     NProgess.done();
+    // Loading.close();
     return Promise.reject(error);
   }
 );
