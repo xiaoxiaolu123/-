@@ -98,7 +98,7 @@ export default [
     children: [
       {
         name: '学员列表',
-        key: '/member/list',
+        key: '/member/index',
         permission: 'member',
       },
       {
