@@ -253,14 +253,14 @@ const routes = [
       {
         path: '/system/system-administrator',
         name: 'system-administrator',
-        component: () => import('@/views/HomeView.vue'),
+        component: () => import('@/views/system/AdministratorView.vue'),
         meta: {
           fatherPath: '/system/system-administrator',
           title: '管理人员',
         },
         
       },
-      
+
       {
         path: '/system/config',
         name: 'system-config',

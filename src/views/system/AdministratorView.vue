@@ -47,7 +47,7 @@ export default {
         return {
             currentPage: 1,
             tableData: [],
-            loading: true,
+            // loading: true,
             total: null,
 
             num: {

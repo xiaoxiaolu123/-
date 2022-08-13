@@ -64,6 +64,7 @@
       </div>
 
       <div class="page-main-body-box">
+      
         <router-view></router-view>
       </div>
     </div>

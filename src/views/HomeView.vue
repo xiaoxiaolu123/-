@@ -1,6 +1,6 @@
 <!--  -->
 <template>
-<div class=''></div>
+<div class=''>1234</div>
 </template>
 
 <script>

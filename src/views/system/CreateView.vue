@@ -4,11 +4,13 @@
     <FanHui :msg="'添加管理员'"></FanHui>
 <!-- <div> -->
 <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
- <el-form-item label="角色" prop="region">
+ <el-form-item label="角色" prop="">
     <el-select v-model="ruleForm.region" placeholder="请选择">
       <el-option label="区域一" value="shanghai"></el-option>
       <el-option label="区域二" value="beijing"></el-option>
     </el-select>
+     <el-link type="primary">角色管理</el-link>
+
   </el-form-item>
   <el-form-item label="姓名" prop="name">
     <el-input v-model="ruleForm.name"></el-input>
@@ -18,9 +20,21 @@
   </el-form-item>
  <el-form-item label="密码" prop="name">
     <el-input v-model="ruleForm.name"></el-input>
+    
   </el-form-item>
- 
-  
+  <div class="denIu"><span>禁止登录</span>
+ <el-switch
+  v-model="value"
+  active-color="#409eff"
+  inactive-color="#dcdfe6">
+</el-switch></div>
+ <div class="bottom-form">
+    <el-form-item>
+    <el-button type="primary" @click="submitForm('numberValidateForm')">保存</el-button>
+    <el-button @click="resetForm('numberValidateForm')">取消</el-button>
+  </el-form-item>
+ </div>
+   
 </el-form>
 <!-- </div> -->
     </div>
@@ -38,6 +52,7 @@ export default {
     data() {
         //这里存放数据
         return {
+              value: false,
               ruleForm: {
           name: '',
           region: '',
@@ -66,7 +81,22 @@ export default {
     //监控data中的数据变化
     watch: {},
     //方法集合
-    methods: {},
+    methods: {
+         submitForm(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            alert('submit!');
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+      },
+      resetForm(formName) {
+        this.$refs[formName].resetFields();
+      }
+    
+    },
     //生命周期 - 创建完成（可以访问当前this实例）
     created() {},
     //生命周期 - 挂载完成（可以访问DOM元素）
@@ -92,43 +122,57 @@ export default {
     margin-bottom: 90px;
     box-shadow: 0 2px 4px 0 hsl(0deg 0% 40% / 5%);
     min-width: 1180px;
-//    .back-bar-box.mb-30 {
-//     display: flex;
-//     align-items: center;
-//   .btn-back {
-//       font-size: 14px;
-//     font-weight: 400;
-//     color: #333;
-//     cursor: pointer;
-//     i.el-icon-back {
-//     font-family: element-icons!important;
-//     speak: none;
-//     font-style: normal;
-//     font-weight: 400;
-//     font-variant: normal;
-//     text-transform: none;
-//     line-height: 1;
-//     vertical-align: baseline;
-//     display: inline-block;
-//     -webkit-font-smoothing: antialiased;
-//     }
-//   }
-// .btn-back:hover{
-//     color: #66b1ff;
-// }
-//   .line {
-// width: 1px;
-//     height: 14px;
-//     background-color: #d8d8d8;
-//     margin-right: 15px;
-//     margin-left: 15px;
-//   }
+    .denIu{
+        margin-left: 30px;
+        margin-top: 30px;
+        font-size: 16px;
+        span{
+        padding-right:15px ;
+clear: #606266;
+        }
+    }
+    /deep/.el-form.demo-ruleForm{
+        margin-left: 120px;
+        font-size: 16px;
+            margin-bottom: 30px;
+    }
+/deep/.el-input__inner{
+    width: 350px;
+    height: 45px;
+}
+/deep/.el-link--inner{
+    margin-left: 18px;
+    font-size: 17px;
+}
+/deep/.el-form-item__label{
+    font-size: 16px;
+}
+.bottom-form{
+   position: fixed;
+    bottom: 0;
+    height: 95px;
+    left: 200px;
+    right: 0;
+    z-index: 2000;
+    box-sizing: border-box;
+    padding-top: 28px;
+    padding-bottom: 20px;
+    padding-left: 0px;
+    background-color: #fff;
+    display: flex;
+    box-shadow: 0 -2px 4px 0 hsl(0deg 0% 40% / 5%);
+    /deep/.el-form-item{
+// padding-left: 30px;
+     margin-left: -80px ; 
+    }
+     /deep/.el-button{
+    font-weight: 400;
+    height: 45px;
+    width: 80px;
+    font-size: 16px;
+    margin-right:20px;
+      }
+}
 
-//   .name {
-// font-size: 14px;
-//     font-weight: 1000;
-//     color: #333;
-// }
-//   }
 }
 </style>

@@ -37,7 +37,7 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   (response) => {
     // 以服务的方式调用的 Loading 需要异步关闭
-    // NProgess.done();
+    NProgess.done();
     // Loading.close();
     return response.data;
   },
