@@ -3,8 +3,7 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
-const routes = [
-  {
+const routes = [{
     path: '/',
     name: 'Login',
     component: () => import('@/views/LoginView.vue'),
@@ -20,8 +19,7 @@ const routes = [
     meta: {
       title: '主页',
     },
-    children: [
-      {
+    children: [{
         path: '',
         name: 'DashboardHome',
         component: () => import('@/views/HomeView.vue'),
@@ -46,8 +44,7 @@ const routes = [
     path: '/decoration',
     name: 'Decoration',
     component: () => import('@/views/DashboardView.vue'),
-    children: [
-      {
+    children: [{
         path: '/decoration/pc',
         name: 'DecorationPC',
         component: () => import('@/views/HomeView.vue'),
@@ -72,23 +69,75 @@ const routes = [
     children: [
       {
         path: '/course/vod',
-        name: 'CourseVod',
-        component: () => import('@/views/HomeView.vue'),
+        name: 'IndexView',
+        component: () => import('@/views/course/IndexView.vue'),
         meta: {
           fatherPath: '/course/vod',
           title: '录播课',
         },
       },
+      // 新建课程的主页
       {
-        path: '/course/live',
-        name: 'CourseLive',
-        component: () => import('@/views/HomeView.vue'),
+        path: '/course/vod/create',
+        component: () => import('@/views/course/Create/CreateCourseView.vue'),
+        meta: {
+          title: '新建课程',
+        },
       },
+      // 录播课分类的主页
       {
-        path: '/course/topic',
-        name: 'CourseTopic',
-        component: () => import('@/views/HomeView.vue'),
+        path: '/course/vod/category/index',
+        component: () => import('@/views/course/Category/IndexView.vue'),
+        meta: {
+          title: '录播课分类',
+        },
       },
+      // 添加课程分类的页面
+      {
+        path: '/course/vod/category/create',
+        component: () => import('@/views/course/Category/CreateView.vue')
+      },
+      // 更新分类的页面
+      {
+        path: '/course/vod/category/update',
+        component: () => import('@/views/course/Category/UpdateView.vue')
+      },
+      // 课程评论区的页面
+      {
+        path: '/course/vod/components/vod-comments',
+        component: () => import('@/views/course/CourseCommentView.vue')
+      },
+      // 章节管理 /course/vod/chapter/index
+      // 课时评论的页面
+      {
+        path: '/course/vod/video/comments',
+        component: () => import('@/views/course/Video/VideoCommentView.vue')
+      },
+      // 课时管理的页面 
+      {
+        path: '/course/vod/video/index',
+        component: () => import('@/views/course/Video/CourseTimeView.vue')
+      },
+      // 添加课时
+      {
+        path: '/course/vod/video/create',
+        component: () => import('@/views/course/Video/CreateVideoView.vue')
+      },
+      // 视频录入页面
+      {
+        path: '/course/vod/video-import',
+        component: () => import('@/views/course/Video/VideoImportView.vue')
+      },
+      // {
+      //   path: '/course/vod',
+      //   name: 'CourseVod',
+      //   component: () => import('@/views/HomeView.vue'),
+      //   meta: {
+      //     fatherPath: '/course/vod',
+      //     title: '录播课',
+      //   },
+      // },
+
     ],
   },
   //学员
@@ -96,25 +145,22 @@ const routes = [
     path: '/member',
     name: 'Member',
     component: () => import('@/views/DashboardView.vue'),
-    children: [
-      {
-        path: '/member/list',
-        name: 'MemberList',
-        component: () => import('@/views/HomeView.vue'),
-        meta: {
-          fatherPath: '/member/list',
-          title: '学员列表',
-        },
+    children: [{
+      path: '/member/list',
+      name: 'MemberList',
+      component: () => import('@/views/HomeView.vue'),
+      meta: {
+        fatherPath: '/member/list',
+        title: '学员列表',
       },
-    ],
+    }, ],
   },
   //财务
   {
     path: '/finance',
     name: 'Finance',
     component: () => import('@/views/DashboardView.vue'),
-    children: [
-      {
+    children: [{
         path: '/finance/order-list',
         name: 'FinanceOrderList',
         component: () => import('@/views/HomeView.vue'),
@@ -139,8 +185,7 @@ const routes = [
     path: '/operate',
     name: 'Operate',
     component: () => import('@/views/DashboardView.vue'),
-    children: [
-      {
+    children: [{
         path: '/operate/role',
         name: 'OperateRole',
         component: () => import('@/views/operation/Role/RoleView.vue'),
@@ -148,7 +193,7 @@ const routes = [
           fatherPath: '/operate/role',
           title: 'VIP会员',
         },
-        
+
       },
       {
         path: '/addRole',
@@ -249,8 +294,7 @@ const routes = [
     name: 'System',
     component: () => import('@/views/DashboardView.vue'),
 
-    children: [
-      {
+    children: [{
         path: '/system/system-administrator',
         name: 'system-administrator',
         component: () => import('@/views/system/AdministratorView.vue'),
@@ -258,7 +302,7 @@ const routes = [
           fatherPath: '/system/system-administrator',
           title: '管理人员',
         },
-        
+
       },
 
       {
@@ -290,7 +334,7 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () =>
-      import(/* webpackChunkName: "about" */ '../views/AboutView.vue'),
+      import( /* webpackChunkName: "about" */ '../views/AboutView.vue'),
   },
 ];
 

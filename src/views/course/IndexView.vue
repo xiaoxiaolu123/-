@@ -1,46 +1,357 @@
-<!-- 课程 -->
+<!--Course  IndexView -->
 <template>
-<div class=''>课程</div>
+  <div class="index">
+    <!-- 头部 -->
+    <div class="headBox">
+      <Head>
+        <template slot="Left">
+          <el-row>
+            <el-button type="primary" @click.stop="gotoCreateCourseView">新建课程</el-button>
+            <el-button type="primary" @click.stop="gotoCategoryView">录播课分类</el-button>
+            <el-button type="primary" @click.stop="gotoCommentView">课程评论</el-button>
+            <el-button type="primary" @click.stop="gotoViewCommentView">课时评论</el-button>
+            <el-button type="primary" @click.stop="gotoVideoImport">课程批量导入</el-button>
+          </el-row>
+          <div class="btn">
+            <span><img src="@/assets/img/setting.png" alt="" />公众号配置</span>
+          </div>
+        </template>
+        <template slot="Right">
+          <div class="input">
+            <el-input v-model="input" placeholder="请输入内容"></el-input>
+          </div>
+          <el-row>
+            <el-button>清空</el-button>
+            <el-button type="primary">筛选</el-button>
+          </el-row>
+          <div class="more">
+            <span><img src="@/assets/img/setting.png" alt="" /></span>更多
+          </div>
+        </template>
+      </Head>
+    </div>
+    <!-- 表单部分 -->
+    <div class="tableBox">
+        <el-table   
+        @sort-change="changeSort" 
+        ref="filterTable"
+        :data="courseInfo" 
+        row-key="id"
+        style="width: 100%" :header-cell-style="{background:'#f1f2f9',color:'black'}"
+   >
+          <!-- ID -->
+          <el-table-column prop="id" label="ID" sortable width="74">
+          </el-table-column>
+          <!-- 课程 -->
+          <el-table-column prop="title"  label="课程" width="370">
+           <template slot-scope="scope">
+              <img :src="scope.row.thumb" min-width="40" height="90" width="120"  />
+              <span class="title">
+                {{scope.row.title}}
+              </span>
+          </template>
+          
+          </el-table-column>
+          <!-- 分类 -->
+          <el-table-column
+            prop="category.name"
+            label="分类"
+            width="134"
+          >
+          </el-table-column>
+          <!-- 价格 -->
+          <el-table-column prop="charge" label="价格"  sortable  column-key="charge"  width="89">
+          </el-table-column>
+          <!-- 销量 -->
+          <el-table-column
+            prop="user_count"
+            label="销量"
+            sortable
+            width="89"
+            column-key="sales"
+          >
+          </el-table-column>
+          <!-- 上架时间 -->
+          <el-table-column
+            prop="published_at"
+            label="上架时间"
+            sortable
+            order: string
+            width="156"
+            column-key="date"
+          >
+          </el-table-column>
+          <!-- 是否显示 -->
+          <el-table-column prop="is_show" label="是否显示" width="135">
+            <div class="isShow">·显示</div>
+          </el-table-column>
+          <!-- 操作 -->
+          <el-table-column fixed="right" label="操作" width="150">
+            <template slot-scope="scope">
+              <el-button
+                @click.native.prevent="deleteRow(scope.$index, tableData)"
+                type="text"
+                size="big"
+              >
+                课时
+              </el-button>
+
+              <el-button
+                @click.native.prevent="deleteRow(scope.$index, tableData)"
+                type="text"
+                size="big"
+              >学员
+             </el-button>
+      
+            <el-dropdown>
+            <span class="el-dropdown-link">
+              更多<i class="el-icon-arrow-down el-icon--right"></i>
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item>黄金糕</el-dropdown-item>
+              <el-dropdown-item>狮子头</el-dropdown-item>
+              <el-dropdown-item>螺蛳粉</el-dropdown-item>
+            </el-dropdown-menu>
+            </el-dropdown>
+    
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="block">
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-sizes="[10, 20,50, 100]"
+          :page-size="10"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="14"
+        >
+        </el-pagination>
+      </div>
+    </div>
+  </div>
+
+             
 </template>
 
 <script>
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
-
+import Head from "@/components/Head.vue";
 export default {
-//import引入的组件需要注入到对象中才能使用
-components: {},
-data() {
-//这里存放数据
-return {
-
+  //import引入的组件需要注入到对象中才能使用
+  components: {
+    Head,
+  },
+  data() {
+    //这里存放数据
+    return {
+      // 当前页码
+      currentPage: 1,
+      // 搜索内容
+      input: "",
+      // 数据存储
+      // 课程分类
+      categories: [],
+      // 课程所有信息
+      course: {},
+      // 课程详细信息
+      courseInfo: [],
+      // 导航信息
+      links: [],
+      page: 1,
+      size: 10,
+      // 排序类别(升降序)
+      order: "asc",
+      // 排序类别（id/销量/）
+      sort: "id",
+      // 排序类型（id/销量/价格）
+      prop: "",
+      // 总页数
+      total: null,
+    };
+  },
+  //监听属性 类似于data概念
+  computed: {},
+  //监控data中的数据变化
+  watch: {},
+  //方法集合
+  methods: {
+    // 获取排序的数据,重新排序
+    changeSort(val) {
+      // console.log(val); // column: {…} order: "ascending" prop: "date"
+      this.prop = val.prop;
+      this.sort = this.prop;
+      if (val.order == "descending") {
+        this.order = "desc";
+        // console.log(val);
+      }
+      if (val.order == "ascending") {
+        this.order = "asc";
+      }
+      this.getData();
+    },
+    // 实现底部导航的两种方法
+    handleSizeChange(val) {
+      // console.log(`每页 ${val} 条`);
+      this.total = val;
+    },
+    handleCurrentChange(val) {
+      // console.log(`当前页: ${val}`);
+      this.page = val;
+      // console.log(this.page);
+      this.getData();
+    },
+    // 跳转新建课程页面
+    gotoCreateCourseView: function () {
+      this.$router.push({
+        path: "vod/create",
+      });
+    },
+    // 跳转录播课分类页面
+    gotoCategoryView: function () {
+      this.$router.push({
+        path: "vod/category/index",
+      });
+    },
+    // 跳转课程评论页面
+    gotoCommentView: function () {
+      this.$router.push({
+        path: "vod/components/vod-comments",
+      });
+    },
+    // 跳转课时评论页面
+    gotoViewCommentView: function () {
+      this.$router.push({
+        path: "vod/video/comments",
+      });
+    },
+    // vod/
+    gotoVideoImport: function () {
+      this.$router.push({
+        path: "vod/video-import",
+      });
+    },
+    // 接口获取数据方法
+    getData: function () {
+      this.$request
+        .get(`course`, {
+          params: {
+            page: this.page,
+            size: this.size,
+            sort: this.sort,
+            order: this.order,
+          },
+        })
+        .then((res) => {
+          // console.log(res);
+          this.course = res.data.courses;
+          this.links = this.course.links;
+          this.categories = this.categories;
+          this.courseInfo = this.course.data;
+        });
+    },
+  },
+  //生命周期 - 创建完成（可以访问当前this实例）
+  created() {
+    this.getData();
+  },
+  //生命周期 - 挂载完成（可以访问DOM元素）
+  mounted() {},
+  beforeCreate() {}, //生命周期 - 创建之前
+  beforeMount() {}, //生命周期 - 挂载之前
+  beforeUpdate() {}, //生命周期 - 更新之前
+  updated() {}, //生命周期 - 更新之后
+  beforeDestroy() {}, //生命周期 - 销毁之前
+  destroyed() {}, //生命周期 - 销毁完成
+  activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
 };
-},
-//监听属性 类似于data概念
-computed: {},
-//监控data中的数据变化
-watch: {},
-//方法集合
-methods: {
-
-},
-//生命周期 - 创建完成（可以访问当前this实例）
-created() {
-
-},
-//生命周期 - 挂载完成（可以访问DOM元素）
-mounted() {
-
-},
-beforeCreate() {}, //生命周期 - 创建之前
-beforeMount() {}, //生命周期 - 挂载之前
-beforeUpdate() {}, //生命周期 - 更新之前
-updated() {}, //生命周期 - 更新之后
-beforeDestroy() {}, //生命周期 - 销毁之前
-destroyed() {}, //生命周期 - 销毁完成
-activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
-}
 </script>
-<style  lang='less' scoped>
-
+<style lang="less" scoped>
+.index::-webkit-scrollbar {
+  width: 0px;
+}
+.index {
+  // margin: 20px 5px 20px 20px;
+  height: auto;
+  background-color: rgb(255, 255, 255);
+  padding: 30px;
+  float: left;
+  box-sizing: border-box;
+  border-radius: 15px;
+  margin-bottom: 90px;
+  box-shadow: rgb(102 102 102 / 5%) 0px 2px 4px 0px;
+  min-width: 1180px;
+  // min-width: 1000px;
+  overflow-y: auto;
+  .headBox {
+    .input {
+      width: 150px !important;
+      // background-color: wheat;
+      margin-right: 10px;
+    }
+    .more {
+      margin-left: 10px;
+      display: flex;
+      justify-items: center;
+      align-items: center;
+      font-size: 16px;
+      span {
+        display: flex;
+        img {
+          height: 30px;
+        }
+      }
+    }
+  }
+  .tableBox {
+    margin-top: 30px;
+    span.title {
+      // position: absolute;
+      // display: block;
+      padding-top: 20px;
+      float: left;
+      height: 70px;
+      // background-color: pink;
+      width: 200px;
+      margin-left: 10px;
+    }
+    img {
+      display: block;
+      float: left;
+      height: 90px;
+    }
+    .block {
+      margin-top: 30px;
+      display: flex;
+      /deep/ .el-pagination {
+        display: inline-block;
+        margin: auto;
+      }
+    }
+    .isShow {
+      width: 100%;
+      // background-color: chocolate !important ;
+      color: #52c88c;
+      // text-align: center;
+    }
+  }
+}
+.el-dropdown {
+  display: inline-block;
+  position: absolute;
+  // background-color: aqua;
+  top: 45px;
+  margin-left: 10px;
+  height: 20px;
+  width: 70px;
+}
+.el-dropdown-link {
+  cursor: pointer;
+  color: #409eff;
+}
+.el-icon-arrow-down {
+  font-size: 12px;
+}
 </style>
