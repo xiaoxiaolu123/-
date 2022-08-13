@@ -95,38 +95,59 @@ const routes = [{
       // 添加课程分类的页面
       {
         path: '/course/vod/category/create',
-        component: () => import('@/views/course/Category/CreateView.vue')
+        component: () => import('@/views/course/Category/CreateView.vue'),
+        meta:{
+          title:'添加课程分类'
+        }
       },
       // 更新分类的页面
       {
         path: '/course/vod/category/update',
-        component: () => import('@/views/course/Category/UpdateView.vue')
+        component: () => import('@/views/course/Category/UpdateView.vue'),
+        meta:{
+          title:'更新课程分类'
+        }
       },
       // 课程评论区的页面
       {
         path: '/course/vod/components/vod-comments',
-        component: () => import('@/views/course/CourseCommentView.vue')
+        component: () => import('@/views/course/CourseCommentView.vue'),
+        meta:{
+          title:" 课程评论"
+        }
       },
       // 章节管理 /course/vod/chapter/index
       // 课时评论的页面
       {
         path: '/course/vod/video/comments',
-        component: () => import('@/views/course/Video/VideoCommentView.vue')
+        component: () => import('@/views/course/Video/VideoCommentView.vue'),
+        meta:{
+          title:'课时评论'
+        }
       },
       // 课时管理的页面 
       {
         path: '/course/vod/video/index',
-        component: () => import('@/views/course/Video/CourseTimeView.vue')
+        component: () => import('@/views/course/Video/CourseTimeView.vue'),
+        meta:{
+          title:'课时管理'
+        }
       },
       // 添加课时
       {
         path: '/course/vod/video/create',
-        component: () => import('@/views/course/Video/CreateVideoView.vue')
+        component: () => import('@/views/course/Video/CreateVideoView.vue'),
+        meta:{
+          title:'添加课时'
+        }
       },
       // 视频录入页面
       {
         path: '/course/vod/video-import',
-        component: () => import('@/views/course/Video/VideoImportView.vue')
+        component: () => import('@/views/course/Video/VideoImportView.vue'),
+        meta:{
+          title:'视频批量导入'
+        }
       },
       // {
       //   path: '/course/vod',
