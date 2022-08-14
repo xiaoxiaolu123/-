@@ -144,19 +144,6 @@
             <div v-loading="loading">
                 <div>
                     <div class="el-table el-table--fit el-table--scrollable-x el-table--enable-row-transition">
-                        <div class="hidden-columns">
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                        </div>
-
                         <!-- 表格 -->
                         <el-table
                             ref="multipleTable"
