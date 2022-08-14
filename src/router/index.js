@@ -196,6 +196,15 @@ const routes = [
                     title: "学员列表",
                 },
             },
+            {
+                path:"/member/:id",
+                name:'Member',
+                component: () => import("@/views/member/MemberView.vue"),
+                meta: {
+                    fatherPath: "/member/index",
+                    title: "学员详情",
+                },
+            }
         ],
     },
     //财务

@@ -355,7 +355,10 @@ export default {
 
         //获取当前行
         handleClick(row) {
-            console.log(row);
+            this.$router.push({
+                path:`/member/${row.id}`,
+                
+            })
         },
 
         //每页条数改变时触发 选择一页显示多少行
