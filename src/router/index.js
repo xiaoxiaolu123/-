@@ -207,7 +207,7 @@ const routes = [
             {
                 path: "/finance/order-list",
                 name: "FinanceOrderList",
-                component: () => import("@/views/HomeView.vue"),
+                component: () => import("@/views/order/IndexView.vue"),
                 meta: {
                     fatherPath: "/finance/order-list",
                     title: "全部订单",
@@ -216,12 +216,31 @@ const routes = [
             {
                 path: "/finance/withdraw",
                 name: "FinanceWithdraw",
-                component: () => import("@/views/HomeView.vue"),
+                component: () => import("@/views/order/WithdrawOrdersView.vue"),
                 meta: {
                     fatherPath: "/finance/withdraw",
                     title: "余额提现",
                 },
             },
+            {
+                path: "/finance/refund",
+                name: "Financerefund",
+                component: () => import("@/views/order/Refundorder.vue"),
+                meta: {
+                    fatherPath: "/finance/refund",
+                    title: "全部订单",
+                },
+            },
+            {
+                path: "/finance/detail",
+                name: "Financedetail",
+                component: () => import("@/views/order/Orderdetails.vue"),
+                meta: {
+                    fatherPath: "/finance/Orderdetails",
+                    title: "全部订单",
+                },
+            },
+            
         ],
     },
     //运营
