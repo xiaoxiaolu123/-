@@ -30,9 +30,9 @@
       </div>
 
       <div class="ml-10 w-150">
-        <el-select v-model="value" filterable placeholder="退款类型">
+        <el-select v-model="newvalue" filterable placeholder="退款类型">
           <el-option
-            v-for="item in options"
+            v-for="item in newoptions"
             :key="item.value"
             :label="item.label"
             :value="item.value"
@@ -42,9 +42,9 @@
       </div>
 
       <div class="ml-10 w-150">
-        <el-select v-model="value" filterable placeholder="退款状态">
+        <el-select v-model="newvalues" filterable placeholder="退款状态">
           <el-option
-            v-for="item in options"
+            v-for="item in newoptionss"
             :key="item.value"
             :label="item.label"
             :value="item.value"
@@ -52,15 +52,16 @@
           </el-option>
         </el-select>
       </div>
-
+      <!-- 清空和筛选 -->
       <div class="ml-10 fun-btn">
         <el-button>清空</el-button>
         <el-button type="primary">筛选</el-button>
       </div>
-
+      <!-- 已选 -->
       <div class="ml-10 d-flex drawerMore">
         <img src="@/assets/img/icon-filter.png" alt="" />
-        <span>更多</span>
+        <el-button @click.stop="drawer = true" type="text"> 更多 </el-button>
+        <!-- <span>更多</span> -->
       </div>
     </div>
     
@@ -101,6 +102,73 @@
         </el-pagination>
       </div>
     </div>
+    <!-- 更多 -->
+    <el-drawer :size="360" :visible.sync="drawer" :with-header="false">
+      <div class="n-padding-box">
+        <div class="title mb-20">更多筛选</div>
+
+        <div class="j-flex">
+          <el-input
+            v-model="input"
+            placeholder="订单编号"
+            style="width: 292px"
+          ></el-input>
+        </div>
+        <div class="j-flex mt-20">
+          <el-input
+            v-model="Commodity"
+            placeholder="商品关键字"
+            style="width: 292px"
+          ></el-input>
+        </div>
+        <div class="j-flex mt-20">
+          <el-select
+            v-model="value"
+            placeholder="请选择支付渠道"
+            style="width: 292px"
+          >
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </div>
+
+        <div class="j-flex mt-20">
+          <el-select
+            v-model="newvalue"
+            placeholder="是否有退款"
+            style="width: 292px"
+          >
+            <el-option
+              v-for="item in newoptions"
+              :key="item.newvalue"
+              :label="item.label"
+              :value="item.newvalue"
+            >
+            </el-option>
+          </el-select>
+        </div>
+
+        <div class="j-flex mt-20">
+          <el-date-picker
+            v-model="created_at"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="订单添加开始时间"
+            end-placeholder="结束时间"
+            :picker-options="pickerOptions"
+          ></el-date-picker>
+        </div>
+        <div class="j-b-flex mt-30">
+          <el-button @click.stop="empty">清空</el-button>
+          <el-button @click.stop="screen" type="primary">筛选</el-button>
+        </div>
+      </div>
+    </el-drawer>
   </div>
 </template>
 
@@ -114,6 +182,16 @@ export default {
   data() {
     //这里存放数据
     return {
+       //日期
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now();
+        },
+      },
+      
+      //更多
+      drawer: false, 
+
       //分页
       currentPage: 1,
 
@@ -121,31 +199,60 @@ export default {
       options: [
         {
           value: "选项1",
-          label: "黄金糕",
+          label: "支付宝支付",
         },
         {
           value: "选项2",
-          label: "双皮奶",
+          label: "微信支付",
         },
         {
           value: "选项3",
-          label: "蚵仔煎",
+          label: "线下打款",
+        },
+      ],
+      newoptions:[
+        {
+          value: "选项1",
+          label: "退款类型",
+        },
+        {
+          value: "选项2",
+          label: "原渠道退回",
+        },
+        {
+          value: "选项3",
+          label: "线下打款(线上记录)",
+        },
+      ],
+      newoptionss:[
+         {
+          value: "选项1",
+          label: "退款状态",
+        },
+        {
+          value: "选项2",
+          label: "待处理",
+        },
+        {
+          value: "选项3",
+          label: "退款成功",
         },
         {
           value: "选项4",
-          label: "龙须面",
+          label: "退款异常",
         },
-        {
+            {
           value: "选项5",
-          label: "北京烤鸭",
+          label: "退款已关闭",
         },
       ],
       value: "",
+      newvalue:"",
+      newvalues:"",
       // 这是手机号和退款单号，
       input: "",
 
-      tableData: [
-      ],
+      tableData: [],
       numser: {
         is_local:-1,
         status:0,
@@ -166,8 +273,9 @@ export default {
     deleteRow(index, rows) {
       rows.splice(index, 1);
     },
-    async getrefund(data) {
-      let res = await this.$request.get("/order", { data});
+    // 接口
+    async getrefund(params) {
+      let res = await this.$request.get("/order/refund/list", { params});
       console.log(res);
     },
     handleSizeChange(val) {
@@ -182,7 +290,7 @@ export default {
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
     this.getrefund(this.numser);
-    console.log(this.$route.params.getsb);
+    // console.log(this.$route.params.getsb);
   },
   //生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {},
@@ -230,6 +338,7 @@ export default {
   .View-top-two {
     display: flex;
     justify-content: flex-end;
+    align-items: center;
     .d-flex {
       display: flex;
       align-items: center;

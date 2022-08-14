@@ -122,7 +122,7 @@
           <!-- eslint-disable-next-line -->
           <template slot-scope="scope">
             <div
-              style="color: orange"
+              style="color: red"
               v-if="tableData[scope.$index].status_text == '未支付'"
             >
               {{ tableData[scope.$index].status_text }}
@@ -159,7 +159,7 @@
         <el-table-column prop="date" label="操作" width="120">
           <!-- eslint-disable-next-line -->
           <template slot-scope="scope">
-            <el-link type="primary" @click.stop="detail">查看</el-link>
+            <el-link type="primary" @click.stop="detail(tableData[0].id)">查看</el-link>
             <el-dropdown>
               <el-link type="primary" style="margin-left: 5px;">
                 <span class="el-dropdown-link">
@@ -452,10 +452,11 @@ export default {
       this.getorder(this.numser);
       this.drawer = false;
     },
-
-    detail: function () {
+    // 查看
+    detail: function (id) {
       this.$router.push({
         name: "Financedetail",
+        query:{id}
       });
     },
 

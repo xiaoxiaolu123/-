@@ -232,11 +232,11 @@ const routes = [
                 },
             },
             {
-                path: "/finance/refund",
+                path: "/finance/order-list/refund",
                 name: "Financerefund",
                 component: () => import("@/views/order/Refundorder.vue"),
                 meta: {
-                    fatherPath: "/finance/refund",
+                    fatherPath: "/finance/order-lis/refund",
                     title: "全部订单",
                 },
             },
