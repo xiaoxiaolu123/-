@@ -184,7 +184,7 @@ const routes = [
                 component: () => import("@/views/member/CreateView.vue"),
                 meta: {
                     fatherPath: "/member/index",
-                    title: "学员列表",
+                    title: "添加学员",
                 },
             },
             {
@@ -193,7 +193,7 @@ const routes = [
                 component: () => import("@/views/member/ImportView.vue"),
                 meta: {
                     fatherPath: "/member/index",
-                    title: "学员列表",
+                    title: "学员批量导入",
                 },
             },
         ],
