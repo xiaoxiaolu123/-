@@ -184,7 +184,7 @@ const routes = [
                 component: () => import("@/views/member/CreateView.vue"),
                 meta: {
                     fatherPath: "/member/index",
-                    title: "学员列表",
+                    title: "添加学员",
                 },
             },
             {
@@ -193,9 +193,18 @@ const routes = [
                 component: () => import("@/views/member/ImportView.vue"),
                 meta: {
                     fatherPath: "/member/index",
-                    title: "学员列表",
+                    title: "学员批量导入",
                 },
             },
+            {
+                path:"/member/:id",
+                name:'Member',
+                component: () => import("@/views/member/MemberView.vue"),
+                meta: {
+                    fatherPath: "/member/index",
+                    title: "学员详情",
+                },
+            }
         ],
     },
     //财务
@@ -345,7 +354,7 @@ const routes = [
                 component: () => import("@/views/operation/wechat/WechatMenuView.vue"),
                 meta: {
                     fatherPath: "/operate/message",
-                    title: "编辑自动回复",
+                    title: "公众号菜单",
                 },
             },
         ],

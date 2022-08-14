@@ -144,19 +144,6 @@
             <div v-loading="loading">
                 <div>
                     <div class="el-table el-table--fit el-table--scrollable-x el-table--enable-row-transition">
-                        <div class="hidden-columns">
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                        </div>
-
                         <!-- 表格 -->
                         <el-table
                             ref="multipleTable"
@@ -355,7 +342,10 @@ export default {
 
         //获取当前行
         handleClick(row) {
-            console.log(row);
+            this.$router.push({
+                path:`/member/${row.id}`,
+                
+            })
         },
 
         //每页条数改变时触发 选择一页显示多少行
