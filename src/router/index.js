@@ -326,7 +326,7 @@ const routes = [
                 component: () => import("@/views/operation/wechat/WechatMenuView.vue"),
                 meta: {
                     fatherPath: "/operate/message",
-                    title: "编辑自动回复",
+                    title: "公众号菜单",
                 },
             },
         ],
