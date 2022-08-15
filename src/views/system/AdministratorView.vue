@@ -119,8 +119,7 @@ handleDelete(id,is_super){
                 return;
               }
             //   this.indexInfo();
-        this.getParameters(this.num);
-
+            // 删除
               this.$message({
                 type: "success",
                 message: "删除成功",

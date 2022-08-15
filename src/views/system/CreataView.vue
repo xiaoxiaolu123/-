@@ -41,7 +41,7 @@ export default {
         //这里存放数据
         return {
             value: false,
-            props: { multiple: true },
+            props: { multiple: true },//正确
             ruleForm: {
                 username: "",
                 slug: "",
