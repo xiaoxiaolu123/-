@@ -82,13 +82,15 @@ export default {
                 return;
               }
             //   this.indexInfo();
+              this.getParameters(this.num);
+
               this.$message({
                 type: "success",
                 
                 message: "删除成功!",
               });
             })
-           
+        //    失败
             .catch((e) => {
               this.$message.error("删除失败");
             });

@@ -405,6 +405,33 @@ const routes = [
                   title: '管理员角色',
                 },
               },
+              {
+                path: '/system/adminroles/creata',
+                name: 'adminroles',
+                component: () => import('@/views/system/CreataView.vue'),
+                meta: {
+                  fatherPath: '/system/system-administrator',
+                  title: '添加管理员角色',
+                },
+              },
+              {
+                path: '/system/adminroles/updata',
+                name: 'adminroles',
+                component: () => import('@/views/system/UpdataView.vue'),
+                meta: {
+                  fatherPath: '/system/system-administrator',
+                  title: '编辑管理员角色',
+                },
+              },
+              {
+                path: '/system/system-administrator/update',
+                name: 'update',
+                component: () => import('@/views/system/UpdateView.vue'),
+                meta: {
+                  fatherPath: '/system/system-administrator',
+                  title: '编辑管理员',
+                },
+              },
         ],
     },
 
