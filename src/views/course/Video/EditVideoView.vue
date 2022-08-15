@@ -6,7 +6,7 @@
       <div class="headBox">
         <Head>
           <template slot="title">
-            <div id="title">新建录播课程</div>
+            <div id="title">编辑录播课程</div>
           </template>
         </Head>
       </div>
@@ -23,8 +23,10 @@
             <el-form-item label="所属分类" prop="region">
               <el-select v-model="ruleForm.region" placeholder="请选择">
                 <el-option
+                  @click.native="handleChange(item)"
                   v-for="item in course"
                   :key="item.id"
+                  :category="item.id"
                   :label="item.name"
                   :value="item.id"
                 >
@@ -158,6 +160,7 @@ export default {
   data() {
     //这里存放数据
     return {
+      category:"",
       // 是否免费按钮
       value1: false,
       // // 免费状态隐藏价格
@@ -170,6 +173,7 @@ export default {
       is_free: 0,
       // 1 关
       is_show: 0,
+      drowID:null,
       // 存储数据
       ruleForm: {
         // 所属分类
@@ -237,10 +241,8 @@ export default {
             required: true,
           },
         ],
-        // 自定义的获取到数据
-        // courseInfo: {},
       },
-      // 课程数据
+      // 下拉框课程数据
       course: {},
       // 子组件获取的图片
       img: "",
@@ -253,8 +255,10 @@ export default {
       size: 10,
       sort: "id",
       order: "desc",
-      // 要传给安排课时的id
-      cid: 0,
+      // 前面页面传过来的课程id
+      cid: this.$route.query.cid,
+      //   获取的要渲染的数据
+      courseInfo: {},
     };
   },
   //监听属性 类似于data概念
@@ -273,7 +277,12 @@ export default {
   watch: {},
   //方法集合
   methods: {
-    // 提交表单
+    // 监听获取下拉框选择内容
+    handleChange(item){
+        // console.log(item);
+        this.drowID = item.id;
+    },
+    // 提交表单,实现修改数据
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -288,9 +297,9 @@ export default {
           } else {
             this.is_show = 1;
           }
-          this.$request
-            .post(`course`, {
-              category_id: this.ruleForm.region,
+  
+          this.$request.put(`course/${this.cid}`, {
+              category_id: this.drowID,
               title: this.ruleForm.name,
               charge: this.ruleForm.charge,
               description: null,
@@ -304,7 +313,8 @@ export default {
               user_count: null,
             })
             .then((res) => {
-              this.getCid();
+              // this.getCid();
+              this.$router.go(-1);
             })
             .catch((err) => {
               console.log(err);
@@ -336,11 +346,28 @@ export default {
         // console.log(this.state);
       });
     },
+    // 通过id获取数组中对应id对象(通过数组存储要查找的id)
+    getObj: function () {
+      let NumId = Number(this.drowID)
+      // 待测一
+      // console.log(NumId,this.course)
+      let newTargetKeys = [NumId];
+      let labelArr = [];
+      this.course.forEach((item) => {
+        newTargetKeys.forEach((item2) => {
+          if (item.id == item2) {
+            labelArr.push(item);
+          }
+        });
+      });
+      // console.log(labelArr)
+      return labelArr;
+    },
     // 获取刚创建的课时course?page=1&size=10&sort=id&order=desc
-    // 下面的代码是新建课程要传的
+    // 通过cid获取数据遍历初始表单
     getCid: function () {
       this.$request
-        .get(`course`, {
+        .get(`course/${this.cid}`, {
           params: {
             page: this.page,
             size: this.size,
@@ -350,32 +377,39 @@ export default {
         })
         .then((res) => {
           this.$nextTick(() => {
-            this.cid = res.data.courses.data[0].id;
-            this.open();
+            this.courseInfo = res.data;
+            // console.log(this.courseInfo);
+            this.drowID = this.courseInfo.category_id;
+            // console.log(this.drowID)
+            this.ruleForm.name = this.courseInfo.title;
+            this.ruleForm.charge = this.courseInfo.charge;
+            this.ruleForm.thumb = this.courseInfo.thumb;
+            this.ruleForm.published_at = this.courseInfo.published_at;
+            this.ruleForm.textarea = this.courseInfo.short_description;
+            this.ruleForm.original_desc = this.courseInfo.original_desc;
+            this.is_free = this.courseInfo.is_free;
+            this.ruleForm.region = this.getObj()[0].name;
+            if (this.is_free == 0) {
+              this.value1 = false;
+            } else {
+              this.value1 = true;
+            }
+            if (this.is_show == 1) {
+              this.value2 = false;
+            } else {
+              this.value2 = true;
+            }
+            // console.log(this.getObj());
+            this.region = this.getObj()[0].name;
           });
         });
     },
 
-    // 弹窗
-    open() {
-      this.$confirm("新建录播课成功，请在课程中添加课时排课吧！", {
-        confirmButtonText: "立即排课",
-        cancelButtonText: "暂不排课",
-      })
-        .then(() => {
-          console.log(this.cid);
-          this.$router.push({
-            path: "video/index",
-            query: { cid: this.cid },
-          });
-        })
-        .catch(() => {
-          this.returnBack();
-        });
-    },
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   async created() {
+    // 渲染页面数据
+    // 渲染下拉框
     await this.$request.get(`course/create`).then((res) => {
       let categories = res.data.categories;
       let box = [];
@@ -392,14 +426,13 @@ export default {
         }
       }
       this.course = box;
+      // console.log(this.course)
     });
 
-    // this.getCourse();
+    this.getCid();
   },
   //生命周期 - 挂载完成（可以访问DOM元素）
-  mounted() {
-    // this.show();
-  },
+  mounted() {},
   beforeCreate() {}, //生命周期 - 创建之前
   beforeMount() {}, //生命周期 - 挂载之前
   beforeUpdate() {}, //生命周期 - 更新之前

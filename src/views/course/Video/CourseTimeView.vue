@@ -7,7 +7,9 @@
       </template>
     </Head>
     <div class="btns">
-      <el-button type="primary" @click.stop="gotoCreateVideo">添加课时</el-button>
+      <el-button type="primary" @click.stop="gotoCreateVideo"
+        >添加课时</el-button
+      >
       <el-button type="primary">章节管理</el-button>
       <el-button type="danger">删除</el-button>
     </div>
@@ -16,7 +18,7 @@
         style="width: 100%"
         :header-cell-style="{ background: '#f1f2f9', color: 'black' }"
         :data="videosData"
-        :default-sort="{ prop: 'id', order: 'descending' }"
+        :default-sort="{ prop: 'id', order: 'ascending' }"
       >
         <el-table-column type="selection" width="55"> </el-table-column>
         <el-table-column prop="id" label="ID" sortable width="70">
@@ -27,6 +29,17 @@
           width="420"
           :formatter="formatter"
         >
+          <template slot-scope="scope">
+            <span>
+              {{ scope.row.chapter.title }}
+            </span>
+            /
+            <span>
+              {{ scope.row.title }}
+            </span>
+          </template>
+
+          <!-- <div>{{videosData[index].list[scope.$index].chapter.title}}</div> -->
         </el-table-column>
         <el-table-column prop="duration" label="课时时长" sortable width="165">
         </el-table-column>
@@ -36,20 +49,49 @@
           sortable
           width="176"
         >
+          <template slot-scope="scope">{{
+            scope.row.created_at | dateFormat
+          }}</template>
         </el-table-column>
         <el-table-column prop="is_show" label="是否显示" sortable width="100">
-        </el-table-column>
-        <el-table-column width="154" label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
-              >编辑</el-button
-            >
+            <div class="isShow">
+              ·
+              <!-- {{ scope.row.is_show == 0 ? "隐藏" : "显示" }} -->
+              <span v-if="scope.row.is_show == 0" style="color: red">隐藏</span>
+              <span v-if="scope.row.is_show == 1" style="color: #04c877"
+                >显示</span
+              >
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column width="154" label="操作" fixed="right">
+          <template slot-scope="scope">
             <el-button
-              size="mini"
-              type="danger"
-              @click="handleDelete(scope.$index, scope.row)"
-              >删除</el-button
+              @click.native.prevent="gotoCourseTime(scope.row)"
+              type="text"
+              size="big"
             >
+              课时
+            </el-button>
+
+            <el-button
+              @click.native.prevent="deleteRow(scope.$index, tableData)"
+              type="text"
+              size="big"
+              >学员
+            </el-button>
+
+            <el-dropdown>
+              <span class="el-dropdown-link" style="marginLeft:10px;color:#409eff">
+                更多<i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <div class="clickBtn" @click.stop="gotoEditVideo(scope.row)">
+                  <el-dropdown-item>单独订阅</el-dropdown-item>
+                </div>
+              </el-dropdown-menu>
+            </el-dropdown>
           </template>
         </el-table-column>
       </el-table>
@@ -81,18 +123,16 @@ export default {
   data() {
     //这里存放数据
     return {
-      // 获取接口数据要传的参数
+      ctid: this.$route.query.ctid,
       page: 1,
-      size: 10,
-      sort: "id",
-      order: "desc",
-      cid: null,
-      sort2: "published_at",
-      order2: "asc",
+      size: 100,
+      sort: "published_at",
+      order: "asc",
       // 接口获得的数据
       videos: {},
       videosData: [],
       currentPage: 1,
+      page2: null,
       total: null,
     };
   },
@@ -102,16 +142,16 @@ export default {
   watch: {},
   //方法集合
   methods: {
-    gotoCreateVideo:function(){
-      this.$router.push(
-        {path:"create"}
-      )
+    // 跳转添加课时页面
+    gotoCreateVideo: function () {
+      this.$router.push({ path: "create" });
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
     },
+    // 当前页面
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      // console.log(`当前页: ${val}`);
     },
     formatter(row, column) {
       return row.address;
@@ -122,73 +162,35 @@ export default {
     handleDelete(index, row) {
       console.log(index, row);
     },
-    // 获取刚创建的课时course?page=1&size=10&sort=id&order=desc
-    // data。courses。data[0].id
 
-    getCid: function () {
+    // 数据接口获取video?cid=79&page=1&size=100&sort=published_at&order=asc
+    getCourseTime: function () {
+      // console.log(this.ctid);
       this.$request
-        .get(`course`, {
+        .get(`video`, {
           params: {
+            cid: this.ctid,
             page: this.page,
-            size: this.size,
+            size: 100,
             sort: this.sort,
             order: this.order,
           },
         })
         .then((res) => {
-          //  console.log(res.data.courses.data[0].id)
-          this.cid = res.data.courses.data[0].id;
-          this.getCourseTime();
-        });
-    },
-    // category: {id: 1, name: "前端开发"}
-    // category_id: 1
-    // chapters_count: 0
-    // charge: 0
-    // comments_count: 0
-    // created_at: "2022-08-12T12:49:16.000000Z"
-    // id: 85
-    // is_free: 1
-    // is_rec: 0
-    // is_show: 1
-    // published_at: "2022-08-12 20:46:00"
-    // short_description: "1"
-    // slug: ""
-    // thumb: "http://1.14.239.98/storage/images/h2v6oYBHjBXHDC1xxwGbYfZwNr2e4j269TJ8u1Fa.jpg"
-    // title: "JJ"
-    // updated_at: "2022-08-12T12:49:16.000000Z"
-    // user_count: 0
-    // user_id: 0
-    // videos_count: 0
-    // 数据接口获取video?cid=79&page=1&size=100&sort=published_at&order=asc
-
-    getCourseTime: function () {
-      console.log(this.cid);
-      this.$request
-        .get(`video`, {
-          params: {
-            // cid: 13,
-            cid: this.cid,
-            page: this.page,
-            size: 100,
-            sort: this.sort2,
-            order: this.order2,
-          },
-        })
-        .then((res) => {
-          console.log(res.data);
+          // console.log(res.data);
           this.videos = res.data.videos;
+          // 要遍历的数据
           this.videosData = this.videos.data;
-          this.page = this.videos.per_page;
+          console.log(this.videosData);
+          this.page2 = this.videos.per_page;
           this.total = this.videos.total;
-          console.log(this.total);
+          // console.log(this.total);
         });
     },
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
-    // this.getCourseTime();
-    this.getCid();
+    this.getCourseTime();
   },
   //生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {},
@@ -206,9 +208,9 @@ export default {
   padding: 30px;
   border-radius: 15px;
   background-color: white;
-  .btns{
+  .btns {
     margin-bottom: 20px;
-   margin-top: 20px;
+    margin-top: 20px;
   }
   .tabBox {
     .block > * {

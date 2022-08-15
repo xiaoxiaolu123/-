@@ -18,13 +18,13 @@
         </template>
         <template slot="Right">
           <div class="input">
-            <el-input v-model="input" placeholder="请输入内容"></el-input>
+            <el-input v-model="keywords" placeholder="请输入内容"></el-input>
           </div>
           <el-row>
-            <el-button>清空</el-button>
-            <el-button type="primary">筛选</el-button>
+            <el-button  @click.stop="clearSelection">清空</el-button>
+            <el-button type="primary" @click.stop="selectData">筛选</el-button>
           </el-row>
-          <div class="more">
+          <div class="more" @click="drawer = true" >
             <span><img src="@/assets/img/setting.png" alt="" /></span>更多
           </div>
         </template>
@@ -33,12 +33,11 @@
     <!-- 表单部分 -->
     <div class="tableBox">
         <el-table   
-        @sort-change="changeSort" 
+        @sort-change="changeSort"
         ref="filterTable"
         :data="courseInfo" 
         row-key="id"
-        style="width: 100%" :header-cell-style="{background:'#f1f2f9',color:'black'}"
-   >
+        style="width: 100%" :header-cell-style="{background:'#f1f2f9',color:'black'}">
           <!-- ID -->
           <el-table-column prop="id" label="ID" sortable width="74">
           </el-table-column>
@@ -50,7 +49,6 @@
                 {{scope.row.title}}
               </span>
           </template>
-          
           </el-table-column>
           <!-- 分类 -->
           <el-table-column
@@ -83,13 +81,20 @@
           </el-table-column>
           <!-- 是否显示 -->
           <el-table-column prop="is_show" label="是否显示" width="135">
-            <div class="isShow">·显示</div>
+            <template slot-scope="scope">
+            <div class="isShow">·
+              <!-- {{ scope.row.is_show == 0 ? "隐藏" : "显示" }} -->
+              <span v-if="(scope.row.is_show == 0)" style="color:red">隐藏</span>
+              <span v-if="(scope.row.is_show == 1)" >显示</span>
+            </div>
+            </template>
+          
           </el-table-column>
           <!-- 操作 -->
           <el-table-column fixed="right" label="操作" width="150">
             <template slot-scope="scope">
               <el-button
-                @click.native.prevent="deleteRow(scope.$index, tableData)"
+                @click.native.prevent="gotoCourseTime(scope.row)"
                 type="text"
                 size="big"
               >
@@ -108,9 +113,15 @@
               更多<i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>黄金糕</el-dropdown-item>
-              <el-dropdown-item>狮子头</el-dropdown-item>
-              <el-dropdown-item>螺蛳粉</el-dropdown-item>
+              <div class="clickBtn" @click.stop="gotoEditVideo(scope.row)">
+                  <el-dropdown-item>编辑</el-dropdown-item>
+              </div>
+              <div  class="clickBtn" @click.stop="gotoAttachView(scope.row)">
+                  <el-dropdown-item >附件</el-dropdown-item>
+              </div>
+              <div  class="clickBtn" @click.stop="DeleteCourseId(scope.row)" >
+                <el-dropdown-item >删除</el-dropdown-item>
+              </div>
             </el-dropdown-menu>
             </el-dropdown>
     
@@ -130,6 +141,41 @@
         </el-pagination>
       </div>
     </div>
+
+    <div class="drawer">
+      <el-drawer
+        title="更多筛选"
+        :visible.sync="drawer"
+        :size="360"
+        :with-header="false">
+        <div class="box">
+           <div class="title">更多筛选</div>
+        <el-form ref="form" :model="form" label-width="80px">
+          <el-form-item >
+            <el-input placeholder="课程名称关键字" v-model="keywords"></el-input>
+        </el-form-item>
+        <el-form-item >
+          <el-select v-model="form.categoryID" placeholder="分类">
+         <el-option
+                  v-for="item in categories"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+          </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item >
+            <el-input v-model="form.courseID" placeholder="课程ID"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button style="float:left"  @click.stop="clearSelection">清空</el-button>
+          <el-button  style="float:right" @click="selectData" type="primary">筛选</el-button>
+        </el-form-item>
+        </el-form>
+        </div>
+       
+      </el-drawer>
+    </div>
   </div>
 
              
@@ -147,10 +193,14 @@ export default {
   data() {
     //这里存放数据
     return {
+      // 侧边抽屉筛选项
+      drawer: false,
+      // 显示或隐藏时的文字
+      showtext: "显示",
       // 当前页码
       currentPage: 1,
-      // 搜索内容
-      input: "",
+      // // 搜索内容
+      // input: "",
       // 数据存储
       // 课程分类
       categories: [],
@@ -170,6 +220,17 @@ export default {
       prop: "",
       // 总页数
       total: null,
+      // 课程id(传给“编辑”和“附件”操作的)
+      cid: "",
+      // 课时ctid（"课时"操作的）
+      ctid: "",
+      // 关键字筛选词
+      keywords: null,
+      form: {
+        // keywords: "",
+        categoryID: "",
+        courseID: "",
+      },
     };
   },
   //监听属性 类似于data概念
@@ -233,7 +294,19 @@ export default {
         path: "vod/video-import",
       });
     },
-    // 接口获取数据方法
+    // 课时（跳转课时管理）
+    gotoCourseTime: function (val) {
+      this.ctid = val.id;
+      // console.log(this.ctid)
+      this.$router.push({
+        path: "vod/video/index",
+        query: {
+          ctid: this.ctid,
+        },
+      });
+      // console.log(this.ctid)
+    },
+    // 接口获取主页渲染数据方法
     getData: function () {
       this.$request
         .get(`course`, {
@@ -245,14 +318,106 @@ export default {
           },
         })
         .then((res) => {
-          // console.log(res);
+          console.log(res);
+          this.course = res.data.courses;
+          // console.log(this.course)
+          this.categories = res.data.categories;
+          console.log(this.categories);
+          this.links = this.course.links;
+          this.courseInfo = this.course.data;
+        });
+    },
+    // 删除前的警告框
+    open() {
+      this.$confirm("确定操作?", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          // 删除数据方法
+          // http://1.14.239.98/backend/api/v1/course/133
+          this.$request.delete(`course/${this.cid}`).then(() => {
+            this.$message({
+              type: "success",
+              message: "删除成功!",
+            });
+            this.$nextTick(() => {
+              this.getData();
+            });
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
+    },
+    // 删除课程id(获取id，弹窗、删除功能)
+    DeleteCourseId: function (val) {
+      this.cid = val.id;
+      this.open();
+      console.log(val);
+    },
+    // 编辑功能（跳转编辑录播课程）
+    gotoEditVideo: function (val) {
+      this.cid = val.id;
+      this.$router.push({
+        path: "vod/update",
+        query: {
+          cid: this.cid,
+        },
+      });
+    },
+    // 筛选功能
+    // http://1.14.239.98/backend/api/v1/course?keywords=%E9%92%B1%E7%AB%AF&page=1&size=10&sort=id&order=desc
+    selectData: function () {
+      // console.log(word111)
+      this.$request
+        .get(`course`, {
+          params: {
+            // 课程id
+            id: this.form.courseID,
+            // 关键字
+            keywords: this.keywords,
+            // 课程类名id
+            cid: this.form.categoryID,
+            // 页码
+            page: this.page,
+            // 页数
+            size: this.size,
+            // 排序类型
+            sort: this.sort,
+            // 排序顺序
+            order: this.order,
+          },
+        })
+        .then((res) => {
           this.course = res.data.courses;
           this.links = this.course.links;
           this.categories = this.categories;
           this.courseInfo = this.course.data;
+          console.log(res.data);
         });
     },
+    // 清空筛选条件
+    clearSelection: function () {
+      console.log(111);
+      this.keywords = "";
+      (this.form.courseID = ""), (this.form.categoryID = ""), this.getData();
+    },
+    gotoAttachView: function (val) {
+      this.cid = val.id;
+      this.$router.push({
+        path: "vod/attach/index",
+        query: {
+          cid: this.cid,
+        },
+      });
+    },
   },
+
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
     this.getData();
@@ -304,6 +469,22 @@ export default {
         }
       }
     }
+    .n-padding-box {
+      width: 100%;
+      height: auto;
+      float: left;
+      padding: 30px;
+        .title {
+        width: 100%;
+        height: 16px;
+        font-size: 16px;
+        font-weight: 400;
+        color: #333;
+        line-height: 16px;
+        margin-bottom: 30px;
+        display: flex;
+      }
+    }
   }
   .tableBox {
     margin-top: 30px;
@@ -335,6 +516,39 @@ export default {
       // background-color: chocolate !important ;
       color: #52c88c;
       // text-align: center;
+    }
+  }
+  .drawer {
+    /deep/ .el-drawer__body {
+      // padding-left: 30px;
+      width: 360px !important;
+    }
+    .box {
+      width: 300px;
+      margin-left: 30px;
+      // background-color: yellowgreen;
+    }
+    .title {
+      margin-bottom: 30px;
+      margin-top: 30px;
+    }
+    /deep/ .el-form-item {
+      width: 300px !important;
+      height: 40px !important;
+    }
+    .el-input {
+      width: 300px !important;
+    }
+    /deep/ .el-form-item__content {
+      margin-left: 0px !important;
+    }
+    /deep/ .el-drawer.ltr,
+    .el-drawer.rtl {
+      width: 360px !important;
+      padding-left: 30px !important;
+    }
+    /deep/ .el-select > .el-input {
+      width: 300px;
     }
   }
 }

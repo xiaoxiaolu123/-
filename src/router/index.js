@@ -66,8 +66,7 @@ const routes = [{
     path: '/course',
     name: 'Course',
     component: () => import('@/views/DashboardView.vue'),
-    children: [
-      {
+    children: [{
         path: '/course/vod',
         name: 'IndexView',
         component: () => import('@/views/course/IndexView.vue'),
@@ -96,24 +95,24 @@ const routes = [{
       {
         path: '/course/vod/category/create',
         component: () => import('@/views/course/Category/CreateView.vue'),
-        meta:{
-          title:'添加课程分类'
+        meta: {
+          title: '添加课程分类'
         }
       },
       // 更新分类的页面
       {
         path: '/course/vod/category/update',
         component: () => import('@/views/course/Category/UpdateView.vue'),
-        meta:{
-          title:'更新课程分类'
+        meta: {
+          title: '更新课程分类'
         }
       },
       // 课程评论区的页面
       {
         path: '/course/vod/components/vod-comments',
         component: () => import('@/views/course/CourseCommentView.vue'),
-        meta:{
-          title:" 课程评论"
+        meta: {
+          title: " 课程评论"
         }
       },
       // 章节管理 /course/vod/chapter/index
@@ -121,32 +120,72 @@ const routes = [{
       {
         path: '/course/vod/video/comments',
         component: () => import('@/views/course/Video/VideoCommentView.vue'),
-        meta:{
-          title:'课时评论'
+        meta: {
+          title: '课时评论'
         }
       },
       // 课时管理的页面 
       {
         path: '/course/vod/video/index',
         component: () => import('@/views/course/Video/CourseTimeView.vue'),
-        meta:{
-          title:'课时管理'
+        meta: {
+          title: '课时管理'
         }
       },
       // 添加课时
       {
         path: '/course/vod/video/create',
         component: () => import('@/views/course/Video/CreateVideoView.vue'),
-        meta:{
-          title:'添加课时'
+        meta: {
+          title: '添加课时'
         }
       },
       // 视频录入页面
       {
         path: '/course/vod/video-import',
         component: () => import('@/views/course/Video/VideoImportView.vue'),
-        meta:{
-          title:'视频批量导入'
+        meta: {
+          title: '视频批量导入'
+        }
+      },
+      // 编辑录播课程
+      {
+        path: '/course/vod/update',
+        component: () => import('@/views/course/Video/EditVideoView.vue'),
+        meta: {
+          title: '编辑录播课程'
+        }
+      },
+      // 主页学员--录播学员
+      {
+        path: '/course/vod/1/view',
+        component: () => import('@/views/course/Student/StudentView.vue'),
+        meta: {
+          title: '录播学员'
+        }
+      },
+      // 主页课时里面学员模块--课时学习记录
+      {
+        path: '/course/vod/video/watch-records',
+        component: () => import('@/views/course/Student/WatchRecordsView.vue'),
+        meta: {
+          title: '课时学习记录'
+        }
+      },
+      // 主页更多--课程附件管理
+      {
+        path: '/course/vod/attach/index',
+        component: () => import('@/views/course/Create/AttachView.vue'),
+        meta: {
+          title: '课程附件管理'
+        }
+      },
+      // 附件里面的---添加课程附件
+      {
+        path: '/course/vod/attach/create',
+        component: () => import('@/views/course/Create/AddAttachView.vue'),
+        meta: {
+          title: '添加课程附件'
         }
       },
       // {
