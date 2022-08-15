@@ -124,7 +124,7 @@ export default {
         },
         async getParameters(params) {
             let arr = await this.$request.get("administrator_role", { params }).then((res) => {
-                console.log(JSON.parse(JSON.stringify(res.data)));
+                // console.log(JSON.parse(JSON.stringify(res.data)));
                 this.tableData = res.data.data;
                 this.total = res.data.total;
             });

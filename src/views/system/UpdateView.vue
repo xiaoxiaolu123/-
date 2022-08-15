@@ -133,7 +133,7 @@ this.$router.push({
         async getParameters(params) {
             let arr = await this.$request.get("administrator/create", { params }).then((res) => {
                 // console.log(JSON.parse(JSON.stringify(res.data)));
-                console.log(res.data);
+                // console.log(res.data);
                 this.options = res.data.roles;
             });
         },

@@ -90,9 +90,10 @@ export default {
     //方法集合
 
     methods: {
-        handleSubmit: function () {
+      async  handleSubmit() {
+          let re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{12,25}$/;
             // 获取form表单，调用校验方法
-            this.$request
+           await  this.$request
                 .post("administrator", {
                     email: this.ruleForm.mailbox,
                     is_ban_login: this.ruleForm.is_ban_login,
@@ -102,7 +103,7 @@ export default {
                     role_id: this.ruleForm.options,
                 })
                 .then((res) => {
-                    console.log(res);
+                    // console.log(res);
                     if (res.status == 0) {
                         // 本地存token
                         // localStorage.setItem("admin-token", res.data.token);
@@ -112,6 +113,7 @@ export default {
                     } else if (res.status == 500) {
                         // this.getCaptcha();
                         this.$message.error(res.message);
+                       
                     } else {
                         return false;
                     }
@@ -133,7 +135,7 @@ export default {
                 if (valid) {
                     alert("submit!");
                 } else {
-                    console.log("error submit!!");
+                    // console.log("error submit!!");
                     return false;
                 }
             });
@@ -144,7 +146,7 @@ export default {
         async getParameters(params) {
             let arr = await this.$request.get("administrator/create", { params }).then((res) => {
                 // console.log(JSON.parse(JSON.stringify(res.data)));
-                console.log(res.data);
+                // console.log(res.data);
                 this.options = res.data.roles;
             });
         },
