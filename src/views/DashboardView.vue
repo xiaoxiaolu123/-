@@ -20,7 +20,7 @@
           </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item command="change_pass">修改密码</el-dropdown-item>
-            <el-dropdown-item command="logout">退出</el-dropdown-item>
+            <el-dropdown-item command="logout">安全退出</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>

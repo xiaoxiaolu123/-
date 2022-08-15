@@ -1,7 +1,8 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import Vue from "vue";
+import VueRouter from "vue-router";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
+
 
 const routes = [{
     path: '/',
@@ -200,22 +201,11 @@ const routes = [{
 
     ],
   },
+
   //学员
-  {
-    path: '/member',
-    name: 'Member',
-    component: () => import('@/views/DashboardView.vue'),
-    children: [{
-      path: '/member/list',
-      name: 'MemberList',
-      component: () => import('@/views/HomeView.vue'),
-      meta: {
-        fatherPath: '/member/list',
-        title: '学员列表',
-      },
-    }, ],
-  },
+
   //财务
+
   {
     path: '/finance',
     name: 'Finance',
@@ -233,186 +223,228 @@ const routes = [{
         path: '/finance/withdraw',
         name: 'FinanceWithdraw',
         component: () => import('@/views/HomeView.vue'),
-        meta: {
-          fatherPath: '/finance/withdraw',
-          title: '余额提现',
-        },
       },
-    ],
-  },
-  //运营
-  {
-    path: '/operate',
-    name: 'Operate',
-    component: () => import('@/views/DashboardView.vue'),
-    children: [{
-        path: '/operate/role',
-        name: 'OperateRole',
-        component: () => import('@/views/operation/Role/RoleView.vue'),
-        meta: {
-          fatherPath: '/operate/role',
-          title: 'VIP会员',
-        },
+    ]},
+    //主页
 
-      },
-      {
-        path: '/addRole',
-        name: 'addRole',
-        component: () => import('@/views/operation/Role/AddRoleView.vue'),
-        meta: {
-          fatherPath: '/operate/role',
-          title: '添加会员',
-        },
-      },
-      {
-        path: '/editRole',
-        name: 'editRole',
-        component: () => import('@/views/operation/Role/EditRoleView.vue'),
-        meta: {
-          fatherPath: '/operate/role',
-          title: '编辑会员',
-        },
-      },
-      {
-        path: '/operate/promocode',
-        name: 'OperatePromocode',
-        component: () => import('@/views/operation/Promocode/PromocodeView.vue'),
-        meta: {
-          fatherPath: '/operate/promocode',
-          title: '优惠码',
-        },
-      },
-      {
-        path: '/createcode',
-        name: 'Createcode',
-        component: () => import('@/views/operation/Promocode/CreatecodeView.vue'),
-        meta: {
-          fatherPath: '/operate/promocode',
-          title: '添加优惠码',
-        },
-      },
-      {
-        path: '/createmulticode',
-        name: 'Createmulticode',
-        component: () => import('@/views/operation/Promocode/CreatemulticodeView.vue'),
-        meta: {
-          fatherPath: '/operate/promocode',
-          title: '优惠码批量生成',
-        },
-      },
-      {
-        path: '/codeImport',
-        name: 'CodeImport',
-        component: () => import('@/views/operation/Promocode/CodeImportView.vue'),
-        meta: {
-          fatherPath: '/operate/promocode',
-          title: '优惠码批量生成',
-        },
-      },
-      {
-        path: '/operate/message',
-        name: 'OperateMessage',
-        component: () => import('@/views/operation/wechat/WechatView.vue'),
-        meta: {
-          fatherPath: '/operate/message',
-          title: '公众号',
-        },
-      },
-      {
-        path: '/wechat/messagereply/create',
-        name: 'OperateMessage',
-        component: () => import('@/views/operation/wechat/MessagereplyCreateView.vue'),
-        meta: {
-          fatherPath: '/operate/message',
-          title: '新建自动回复',
-        },
-      },
-      {
-        path: '/wechat/messagereply/update',
-        name: 'MessagereplyUpdate',
-        component: () => import('@/views/operation/wechat/MessagereplyUpdateView.vue'),
-        meta: {
-          fatherPath: '/operate/message',
-          title: '编辑自动回复',
-        },
-      },
-      {
-        path: '/decoration/mp-wechat-menu',
-        name: 'WechatMenu',
-        component: () => import('@/views/operation/wechat/WechatMenuView.vue'),
-        meta: {
-          fatherPath: '/operate/message',
-          title: '编辑自动回复',
-        },
-      },
-    ],
-  },
+    //装修
 
-  //系统
-  {
-    path: '/system',
-    name: 'System',
-    component: () => import('@/views/DashboardView.vue'),
+    //课程
 
-    children: [{
-        path: '/system/system-administrator',
-        name: 'system-administrator',
-        component: () => import('@/views/system/AdministratorView.vue'),
-        meta: {
-          fatherPath: '/system/system-administrator',
-          title: '管理人员',
-        },
+    //学员
+    {
+        path: "/member",
+        name: "Member",
+        component: () => import("@/views/DashboardView.vue"),
+        children: [
+            {
+                path: "/member/index",
+                name: "MemberIndex",
+                component: () => import("@/views/member/IndexView.vue"),
+                meta: {
+                    fatherPath: "/member/index",
+                    title: "学员列表",
+                },
+            },
+            {
+                path: "/member/create",
+                name: "MemberCreate",
+                component: () => import("@/views/member/CreateView.vue"),
+                meta: {
+                    fatherPath: "/member/index",
+                    title: "添加学员",
+                },
+            },
+            {
+                path: "/member/import",
+                name: "MemberImport",
+                component: () => import("@/views/member/ImportView.vue"),
+                meta: {
+                    fatherPath: "/member/index",
+                    title: "学员批量导入",
+                },
+            },
+            {
+                path: "/member/profile",
+                name: "MemberProfile",
+                component: () => import("@/views/member/ProfileView.vue"),
+                meta: {
+                    fatherPath: "/member/index",
+                    title: "实名信息",
+                },
+            },
+            {
+                path:"/member/:id",
+                name:'Member',
+                component: () => import("@/views/member/MemberView.vue"),
+                meta: {
+                    fatherPath: "/member/index",
+                    title: "学员详情",
+                },
+            },
+            {
+                path:"/member/:id/edit",
+                name:'MemberEdit',
+                component: () => import("@/views/member/EditView.vue"),
+                meta: {
+                    fatherPath: "/member/index",
+                    title: "学员编辑",
+                },
+            },
+            {
+                path:"/member/:id/credit1",
+                name:'MemberCredit1',
+                component: () => import("@/views/member/Credit1View.vue"),
+                meta: {
+                    fatherPath: "/member/index",
+                    title: "学员积分",
+                },
+            },
+            {
+                path:"/member/:id/tags",
+                name:'MemberTags',
+                component: () => import("@/views/member/TagsView.vue"),
+                meta: {
+                    fatherPath: "/member/index",
+                    title: "学员标签",
+                },
+            },
+            {
+                path:"/member/:id/remark",
+                name:'MemberRemark',
+                component: () => import("@/views/member/RemarkView.vue"),
+                meta: {
+                    fatherPath: "/member/index",
+                    title: "学员备注",
+                },
+            },
+            {
+                path:"/member/tag/index",
+                name:'MemberTagIndex',
+                component: () => import("@/views/member/TagIndexView.vue"),
+                meta: {
+                    fatherPath: "/member/index",
+                    title: "学员标签列表",
+                },
+            },
+            {
+                path:"/member/tag/create",
+                name:'MemberTagCreate',
+                component: () => import("@/views/member/TagCreateView.vue"),
+                meta: {
+                    fatherPath: "/member/index",
+                    title: "添加学员标签",
+                },
+            },
+            {
+                path:"/member/tag/:id",
+                name:'MemberTagEdit',
+                component: () => import("@/views/member/TagEditView.vue"),
+                meta: {
+                    fatherPath: "/member/index",
+                    title: "编辑学员标签",
+                },
+            },
+        ],
+    },
+    //财务
 
-      },
+    //运营
 
-      {
-        path: '/system/config',
-        name: 'system-config',
-        component: () => import('@/views/HomeView.vue'),
-      },
-      {
-        path: '/system/system-application',
-        name: 'system-application',
-        component: () => import('@/views/HomeView.vue'),
-      },
-      {
-        path: '/system/system-administrator/create',
-        name: 'create',
-        component: () => import('@/views/system/CreateView.vue'),
-        meta: {
-          fatherPath: '/system/create',
-          title: '添加管理员',
-        },
-      },
-    ],
-  },
 
-  {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import( /* webpackChunkName: "about" */ '../views/AboutView.vue'),
-  },
+    //系统
+    {
+        path: "/system",
+        name: "System",
+        component: () => import("@/views/DashboardView.vue"),
+
+        children: [
+            {
+                path: "/system/system-administrator",
+                name: "system-administrator",
+                component: () => import("@/views/system/AdministratorView.vue"),
+                meta: {
+                    fatherPath: "/system/system-administrator",
+                    title: "管理人员",
+                },
+            },
+
+            {
+                path: "/system/config",
+                name: "system-config",
+                component: () => import("@/views/HomeView.vue"),
+            },
+            {
+                path: "/system/system-application",
+                name: "system-application",
+                component: () => import("@/views/HomeView.vue"),
+            },
+            {
+                path: "/system/system-administrator/create",
+                name: "create",
+                component: () => import("@/views/system/CreateView.vue"),
+                meta: {
+                    fatherPath: "/system/create",
+                    title: "添加管理员",
+                },
+            },
+            {
+                path: '/system/adminroles',
+                name: 'adminroles',
+                component: () => import('@/views/system/AdminrolesView.vue'),
+                meta: {
+                  fatherPath: '/system/system-administrator',
+                  title: '管理员角色',
+                },
+              },
+              {
+                path: '/system/adminroles/creata',
+                name: 'adminroles',
+                component: () => import('@/views/system/CreataView.vue'),
+                meta: {
+                  fatherPath: '/system/system-administrator',
+                  title: '添加管理员角色',
+                },
+              },
+              {
+                path: '/system/adminroles/updata',
+                name: 'adminroles',
+                component: () => import('@/views/system/UpdataView.vue'),
+                meta: {
+                  fatherPath: '/system/system-administrator',
+                  title: '编辑管理员角色',
+                },
+              },
+              {
+                path: '/system/system-administrator/update',
+                name: 'update',
+                component: () => import('@/views/system/UpdateView.vue'),
+                meta: {
+                  fatherPath: '/system/system-administrator',
+                  title: '编辑管理员',
+                },
+              },
+        ],
+    },
+  
+   
 ];
 
 const router = new VueRouter({
-  routes
-})
+    routes,
+});
 
 router.beforeEach((to, from, next) => {
-  document.title = to.meta.title;
-  let token = localStorage.getItem('admin-token');
-  if (token) {
-    next();
-  } else {
-    if (to.name === 'Login') {
-      next();
+    document.title = to.meta.title;
+    let token = localStorage.getItem("admin-token");
+    if (token) {
+        next();
     } else {
-      next('/');
+        if (to.name === "Login") {
+            next();
+        } else {
+            next("/");
+        }
     }
-  }
 });
-export default router
+export default router;
