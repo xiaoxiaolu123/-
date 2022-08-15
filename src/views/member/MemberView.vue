@@ -1,6 +1,8 @@
 <!--  -->
 <template>
   <div class="member">
+   
+
     <div class="meedu-main-body">
       <top-vue title="学员详情"></top-vue>
 
@@ -99,28 +101,49 @@
         </div>
       </div>
     </div>
-    <template>
+     <div class="tabs">
       <el-tabs
         v-model="tabsKey"
-        type="card"
         tab-position="top"
+        border:false
         @tab-click="tabsChange"
       >
-        <!-- <el-tab-pane
-        v-for="item in panes"
-        :key="item.key"
-        :label="item.label"
-        :name="item.key"
-      >
-      </el-tab-pane> -->
-        <el-tab-pane label="用户管理" name="first">用户管理</el-tab-pane>
-        <el-tab-pane label="配置管理" name="second">配置管理</el-tab-pane>
-        <el-tab-pane label="角色管理" name="third">角色管理</el-tab-pane>
-        <el-tab-pane label="定时任务补偿" name="fourth"
-          >定时任务补偿</el-tab-pane
-        >
+        
+        <el-tab-pane label="录播" name="1"></el-tab-pane>
+        <el-tab-pane label="视频" name="2"></el-tab-pane>
+        <el-tab-pane label="录播观看" name="3"></el-tab-pane>
+        <el-tab-pane label="视频观看" name="4"></el-tab-pane>
+        <el-tab-pane label="订单" name="5"></el-tab-pane>
+        <el-tab-pane label="积分明细" name="6"></el-tab-pane>
+        <el-tab-pane label="VIP记录" name="7"></el-tab-pane>
+        <el-tab-pane label="邀请记录" name="8"></el-tab-pane>
+
+        
+
       </el-tabs>
-    </template>
+      <el-table :data="tableData"  stripe>
+        <el-table-column
+          v-for="col in columns"
+          :prop="col.id"
+          :key="col.id"
+          :label="col.label"
+          :width="col.width"
+        >
+          <template slot-scope="scope" >
+            <div v-if="col.id == 'title'" style="display:flex;align-items: center;">
+            <img style="marginRight:10px" :src="scope.row.thumb" width="50px" alt="">
+
+              <span >{{ scope.row.title}}
+            </span>
+
+            </div>
+
+            
+            <span v-if="col.id == 'created_at'">{{ scope.row.created_at }}</span>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
   </div>
 </template>
 
@@ -141,6 +164,22 @@ export default {
       id: "",
       uesrData: "",
       userCourses: "",
+      page: 1,
+      size: 8,
+      tabsKey:'1',
+      columns: [
+        {
+          id: "title",
+          label: "课程",
+        },
+        {
+          id: "created_at",
+          label: "购买时间",
+        },
+      ],
+
+
+      tableData: [],
     };
   },
   //监听属性 类似于data概念
@@ -149,13 +188,33 @@ export default {
   watch: {},
   //方法集合
   methods: {
-    handleClick() {},
+    tabsChange() {},
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   async created() {
     this.id = this.$route.params.id;
     let userRes = await this.$request("/member/" + this.id + "/detail");
     this.uesrData = userRes.data.data;
+    let courseRes = await this.$request(
+      `/member/${this.id}/detail/userCourses`,
+      {
+        params: {
+          page: this.page,
+          size: this.size,
+        },
+      }
+    );
+    console.log(courseRes.data.courses)
+    for(var i in courseRes.data.courses){
+      this.tableData.push(courseRes.data.courses[i]);
+    }
+    for(var i=0;i<courseRes.data.data.data.length;i++){
+      for(var j=0;j<this.tableData.length;j++){
+        if(courseRes.data.data.data[i].course_id==this.tableData[j].id){
+          this.tableData[j].created_at=courseRes.data.data.data[i].created_at
+        }
+      }
+    }
   },
   //生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {},
@@ -170,6 +229,19 @@ export default {
 </script>
 <style  lang='less' scoped>
 .member {
+  .tabs {
+    width: 100%;
+    height: auto;
+    background-color: #fff;
+    box-sizing: border-box;
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 90px;
+    box-shadow: 0 2px 4px 0 hsl(0deg 0% 40% / 5%);
+    min-width: 1180px;
+    position: absolute;
+    bottom: -60px;
+  }
   .meedu-main-body {
     width: 100%;
     height: auto;
@@ -189,6 +261,7 @@ export default {
       justify-content: center;
       margin-top: 10px;
       flex-direction: column;
+
       .user-base-info-box {
         width: 100%;
         height: auto;
