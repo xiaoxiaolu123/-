@@ -197,6 +197,15 @@ const routes = [
                 },
             },
             {
+                path: "/member/profile",
+                name: "MemberProfile",
+                component: () => import("@/views/member/ProfileView.vue"),
+                meta: {
+                    fatherPath: "/member/index",
+                    title: "实名信息",
+                },
+            },
+            {
                 path:"/member/:id",
                 name:'Member',
                 component: () => import("@/views/member/MemberView.vue"),
@@ -204,7 +213,70 @@ const routes = [
                     fatherPath: "/member/index",
                     title: "学员详情",
                 },
-            }
+            },
+            {
+                path:"/member/:id/edit",
+                name:'MemberEdit',
+                component: () => import("@/views/member/EditView.vue"),
+                meta: {
+                    fatherPath: "/member/index",
+                    title: "学员编辑",
+                },
+            },
+            {
+                path:"/member/:id/credit1",
+                name:'MemberCredit1',
+                component: () => import("@/views/member/Credit1View.vue"),
+                meta: {
+                    fatherPath: "/member/index",
+                    title: "学员积分",
+                },
+            },
+            {
+                path:"/member/:id/tags",
+                name:'MemberTags',
+                component: () => import("@/views/member/TagsView.vue"),
+                meta: {
+                    fatherPath: "/member/index",
+                    title: "学员标签",
+                },
+            },
+            {
+                path:"/member/:id/remark",
+                name:'MemberRemark',
+                component: () => import("@/views/member/RemarkView.vue"),
+                meta: {
+                    fatherPath: "/member/index",
+                    title: "学员备注",
+                },
+            },
+            {
+                path:"/member/tag/index",
+                name:'MemberTagIndex',
+                component: () => import("@/views/member/TagIndexView.vue"),
+                meta: {
+                    fatherPath: "/member/index",
+                    title: "学员标签列表",
+                },
+            },
+            {
+                path:"/member/tag/create",
+                name:'MemberTagCreate',
+                component: () => import("@/views/member/TagCreateView.vue"),
+                meta: {
+                    fatherPath: "/member/index",
+                    title: "添加学员标签",
+                },
+            },
+            {
+                path:"/member/tag/:id",
+                name:'MemberTagEdit',
+                component: () => import("@/views/member/TagEditView.vue"),
+                meta: {
+                    fatherPath: "/member/index",
+                    title: "编辑学员标签",
+                },
+            },
         ],
     },
     //财务
@@ -396,6 +468,42 @@ const routes = [
                     title: "添加管理员",
                 },
             },
+            {
+                path: '/system/adminroles',
+                name: 'adminroles',
+                component: () => import('@/views/system/AdminrolesView.vue'),
+                meta: {
+                  fatherPath: '/system/system-administrator',
+                  title: '管理员角色',
+                },
+              },
+              {
+                path: '/system/adminroles/creata',
+                name: 'adminroles',
+                component: () => import('@/views/system/CreataView.vue'),
+                meta: {
+                  fatherPath: '/system/system-administrator',
+                  title: '添加管理员角色',
+                },
+              },
+              {
+                path: '/system/adminroles/updata',
+                name: 'adminroles',
+                component: () => import('@/views/system/UpdataView.vue'),
+                meta: {
+                  fatherPath: '/system/system-administrator',
+                  title: '编辑管理员角色',
+                },
+              },
+              {
+                path: '/system/system-administrator/update',
+                name: 'update',
+                component: () => import('@/views/system/UpdateView.vue'),
+                meta: {
+                  fatherPath: '/system/system-administrator',
+                  title: '编辑管理员',
+                },
+              },
         ],
     },
 

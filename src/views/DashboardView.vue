@@ -20,7 +20,7 @@
           </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item command="change_pass">修改密码</el-dropdown-item>
-            <el-dropdown-item command="logout">退出</el-dropdown-item>
+            <el-dropdown-item command="logout">安全退出</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -45,7 +45,7 @@
                   <i class="iconfont" :class="menu.icon"></i>
                   <span slot="title">{{ menu.name }}</span>
                 </el-menu-item>
-                <el-submenu v-else :key="menu" :index="menu.key">
+                <el-submenu v-else :key="menu.key+1" :index="menu.key">
                   <template slot="title">
                     <i class="iconfont" :class="menu.icon"></i>
                     <span>{{ menu.name }}</span>

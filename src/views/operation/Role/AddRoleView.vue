@@ -110,13 +110,7 @@ export default {
             })
         },
         cancel: function () {
-            this.ruleForm = {
-                name: '',
-                days: '',
-                price: '',
-                delivery: false,
-                desc: "",
-            }
+            this.$router.go(-1);
         }
     },
 
