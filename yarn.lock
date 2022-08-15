@@ -2993,7 +2993,7 @@
 
 "echarts@^5.3.3":
   "integrity" "sha512-BRw2serInRwO5SIwRviZ6Xgm5Lb7irgz+sLiFMmy/HOaf4SQ+7oYqxKzRHAKp4xHQ05AuHw1xvoQWJjDQq/FGw=="
-  "resolved" "https://registry.npmjs.org/echarts/-/echarts-5.3.3.tgz"
+  "resolved" "https://registry.npmmirror.com/echarts/-/echarts-5.3.3.tgz"
   "version" "5.3.3"
   dependencies:
     "tslib" "2.3.0"
