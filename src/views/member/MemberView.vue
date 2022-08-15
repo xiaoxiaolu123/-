@@ -9,9 +9,9 @@
       <div class="user-info-box">
         <div class="user-base-info-box">
           <div class="user-avatar">
-            <img :src="uesrData.avatar" alt="" />
+            <img :src="userData.avatar" alt="" />
           </div>
-          <div class="user-nickname">{{ uesrData.nick_name }}</div>
+          <div class="user-nickname">{{ userData.nick_name }}</div>
           <div class="buttons">
             <el-button
               type="primary"
@@ -55,31 +55,31 @@
         </div>
       </div>
       <div class="panel-info-box">
-        <div class="panel-info-item">ID: {{ uesrData.id }}</div>
-        <div class="panel-info-item">手机号: {{ uesrData.mobile }}</div>
-        <div class="panel-info-item">积分: {{ uesrData.credit1 }}</div>
+        <div class="panel-info-item">ID: {{ userData.id }}</div>
+        <div class="panel-info-item">手机号: {{ userData.mobile }}</div>
+        <div class="panel-info-item">积分: {{ userData.credit1 }}</div>
         <div class="panel-info-item">
-          VIP: {{ uesrData.role != null ? uesrData.role.name : "" }}
+          VIP: {{ userData.role != null ? userData.role.name : "" }}
         </div>
         <div class="panel-info-item">
-          VIP过期时间: {{ uesrData.role_expired_at }}
+          VIP过期时间: {{ userData.role_expired_at }}
         </div>
         <div class="panel-info-item">
-          一级邀请人: {{ uesrData.invitor == null ? "" : uesrData.invitor }}
+          一级邀请人: {{ userData.invitor == null ? "" : userData.invitor }}
         </div>
         <div class="panel-info-item">
           学员邀请码:
           {{
-            uesrData.is_used_promo_code == 0
+            userData.is_used_promo_code == 0
               ? "未使用"
-              : uesrData.is_used_promo_code
+              : userData.is_used_promo_code
           }}
         </div>
         <div class="panel-info-item">
-          推广余额: {{ uesrData.invite_balance }}
+          推广余额: {{ userData.invite_balance }}
         </div>
         <div class="panel-info-item">
-          锁定登录: {{ uesrData.is_lock == 0 ? "否" : "是" }}
+          锁定登录: {{ userData.is_lock == 0 ? "是" : "否" }}
         </div>
         <div class="panel-info-item">IP地址:</div>
         <div class="panel-info-item">注册区域:</div>
@@ -87,7 +87,7 @@
           标签:
           <el-tag
             style="marginleft: 5px"
-            v-for="item in uesrData.tags"
+            v-for="item in userData.tags"
             :key="item"
             >{{ item.name }}</el-tag
           >
@@ -95,8 +95,8 @@
         <div class="panel-info-item">
           备注:
           <div
-            v-if="uesrData.remark != null"
-            v-html="uesrData.remark.remark"
+            v-if="userData.remark != null"
+            v-html="userData.remark.remark"
           ></div>
         </div>
       </div>
@@ -162,7 +162,7 @@ export default {
     //这里存放数据
     return {
       id: "",
-      uesrData: "",
+      userData: "",
       userCourses: "",
       page: 1,
       size: 8,
@@ -194,7 +194,7 @@ export default {
   async created() {
     this.id = this.$route.params.id;
     let userRes = await this.$request("/member/" + this.id + "/detail");
-    this.uesrData = userRes.data.data;
+    this.userData = userRes.data.data;
     let courseRes = await this.$request(
       `/member/${this.id}/detail/userCourses`,
       {
