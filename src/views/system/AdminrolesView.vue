@@ -82,6 +82,8 @@ export default {
                 return;
               }
             //   this.indexInfo();
+              this.getParameters(this.num);
+
               this.$message({
                 type: "success",
                 

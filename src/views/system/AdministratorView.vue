@@ -1,3 +1,4 @@
+<!-- 管理人员-->
 <template>
     <div class="box">
         <div class="float-left mb-30">
@@ -14,8 +15,8 @@
                 <el-table-column prop="is_ban_login" :formatter="noticeFormat" label="禁止登录" width="130"> </el-table-column>
                 <el-table-column prop="" label="操作" width="100">
                     <template slot-scope="scope">
-                        <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                        <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                        <el-button size="mini" @click.stop="Compile(scope.row.id)">编辑</el-button>
+                        <el-button size="mini" type="danger" @click.stop="handleDelete(scope.row.id, scope.row.is_super)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -69,6 +70,14 @@ export default {
                 path: "/system/system-administrator/create",
             });
         },
+         Compile(id) {
+            this.$router.push({
+                path:'/system/system-administrator/update',
+                query:{
+                 id:id,
+                }
+            });
+        },
         noticeFormat(tableData, column) {
             if (tableData.is_ban_login == 0) {
                 return "否";
@@ -83,7 +92,52 @@ export default {
                 this.total = res.data.total;
             });
         },
+//  async indexInfo() {
+//       let res = await this.$request.get("administrator_role", {
+//         params: {
+//           page: 1,
+//           size: 10,
+//           sort: "id",
+//           order: "desc",
+//         },
+//       });
+    //   this.tableData = res.data.data;
+    //   this.num = res.data.total;
+    // },
+handleDelete(id,is_super){
+      this.$confirm("确认操作?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          this.$request
+            .delete(`administrator/${id}`)
+            .then(() => {
+              if (is_super === true) {
+                this.$message.error("当前用户是超级管理员账户无法删除");
+                return;
+              }
+            //   this.indexInfo();
+        this.getParameters(this.num);
 
+              this.$message({
+                type: "success",
+                message: "删除成功",
+                
+              });
+            })
+            .catch((e) => {
+              this.$message.error("删除失败");
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
+},
         handleSizeChange(val) {
             this.getParameters(this.num);
             this.num.size = val;
@@ -97,6 +151,7 @@ export default {
     //生命周期 - 创建完成（可以访问当前this实例）
     created() {
         this.getParameters(this.num);
+        // this.indexInfo()
     },
     //生命周期 - 挂载完成（可以访问DOM元素）
     mounted() {},
@@ -131,15 +186,22 @@ export default {
         font-size: 16px;
     }
     /deep/.el-button--mini {
-        font-size: 14px;
+        font-size: 16px;
         padding: 0;
         border: 0;
         transform: translateY(14px);
         //  padding-top: 10px;
-        color: #409eff;
+        color: #66b1ff;
         cursor: pointer;
         font-weight: 400;
         box-sizing: border-box;
+        
+    }
+    /deep/.el-button--mini:hover{
+      // padding-top: 4px;
+     text-decoration: underline;
+        // color: #409eff;
+
     }
     /deep/.el-table__cell {
         padding: 2px 0;
@@ -147,8 +209,10 @@ export default {
         font-weight: 500;
     }
     /deep/.el-button--danger {
-        color: red;
+        color: #f78998;
         background: beige;
+        font-size: 16px;
+
     }
     .footer {
         text-align: center;
