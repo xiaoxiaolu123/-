@@ -241,12 +241,23 @@ slug: this.ruleForm.slug,
     /deep/.demonstration {
         margin-left: 53px;
     }
-    /deep/.el-cascader {
-    }
-    /deep/.el-cascader > .el-input--suffix > .el-input__inner {
-        width: 1180px;
-        margin-left: 16px;
-    }
+      /deep/input {
+    width: 300px;
+  }
+  /deep/.el-cascader .el-input .el-input__inner {
+    width: 1000px;
+    margin-left: 17px;
+  }
+  /deep/.el-link.el-link--primary.is-underline {
+    margin-left: 15px;
+  }
+  /deep/.el-switch {
+    margin-left: 130px;
+  }
+    // /deep/.el-cascader > .el-input--suffix > .el-input__inner {
+    //     width: 1180px;
+    //     margin-left: 16px;
+    // }
     /deep/.el-cascader__tags{
         padding-left: 22px;
 }

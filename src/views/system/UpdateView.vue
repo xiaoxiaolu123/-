@@ -6,8 +6,8 @@
         <!-- <div> -->
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
             <el-form-item label="角色" prop="">
-                <el-select v-model="ruleForm.region" multiple placeholder="请选择">
-                    <el-option v-for="item in options" :key="item.id" :label="item.display_name" :value="item.display_name"> </el-option>
+                <el-select v-model="ruleForm.region" multiple placeholder="请选择" @change="handleSelectChange">
+                    <el-option v-for="item in options" :key="item.id" :label="item.display_name" :value="item.id"> </el-option>
                 </el-select>
                 <el-link type="primary" @click.stop="Compile">角色管理</el-link>
             </el-form-item>
@@ -59,6 +59,7 @@ export default {
                 type: [],
                 resource: "",
                 desc: "",
+                region: [],
             },
             rules: {
                 username: [
@@ -84,7 +85,7 @@ export default {
                 ],
             },
             options: {},
-          
+            // region: [],
         };
     },
     //监听属性 类似于data概念
@@ -93,16 +94,19 @@ export default {
     watch: {},
     //方法集合
     methods: {
+        handleSelectChange() {
+            this.$forceUpdate();
+        },
         Cancel() {
             this.$router.push({
                 path: "/system/system-administrator",
             });
         },
-       Compile(){
-this.$router.push({
+        Compile() {
+            this.$router.push({
                 path: "/system/adminroles",
             });
-       },
+        },
         handleSubmit: function () {
             // 获取form表单，调用校验方法
 
@@ -112,6 +116,7 @@ this.$router.push({
                     email: this.ruleForm.email,
                     password: this.ruleForm.password,
                     is_ban_login: this.ruleForm.is_ban_login,
+                    role_id: this.ruleForm.region,
                 })
                 .then(() => {
                     if (this.ruleForm.name.length == 0 || this.ruleForm.email == 0) {
@@ -129,6 +134,7 @@ this.$router.push({
                 .catch((e) => {
                     this.$message.error("编辑失败");
                 });
+            // console.log(this.ruleForm.region);
         },
         async getParameters(params) {
             let arr = await this.$request.get("administrator/create", { params }).then((res) => {
@@ -143,7 +149,8 @@ this.$router.push({
         this.getParameters();
         let arr = await this.$request.get(`administrator/${this.$route.query.id}`);
         this.ruleForm = arr.data;
-       
+        // console.log(arr.data);
+        this.ruleForm.region = arr.data.role_id;
     },
     //生命周期 - 挂载完成（可以访问DOM元素）
     mounted() {},
