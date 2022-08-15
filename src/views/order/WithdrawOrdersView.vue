@@ -41,7 +41,7 @@
         >
           <el-table-column type="selection" width="55" disabled> </el-table-column>
           
-          <el-table-column prop="id" label="ID" width="100">
+          <el-table-column prop="id" label="ID" width="55">
           </el-table-column>
           <el-table-column prop="user_id" label="学员ID" width="120">
           </el-table-column>
@@ -83,8 +83,11 @@
           <el-table-column prop="name" label="状态" width="150">
             <!-- eslint-disable-next-line -->
             <template slot-scope="scope">
+
+              <el-tag v-if="tableData[scope.$index].status==0">待处理</el-tag>
+              <el-tag type="info" v-if="tableData[scope.$index].status==1">已处理</el-tag>
               <el-tag type="danger" v-if="tableData[scope.$index].status==2">已驳回</el-tag>
-              <el-tag type="info" v-else>已处理</el-tag>
+        
             </template>
           </el-table-column>
           <el-table-column prop="remark" label="备注" width="300">
@@ -249,12 +252,16 @@ export default {
 <style  lang='less' scoped>
 .Balance-box {
  width: 100%;
-    background-color: #fff;
-    overflow: hidden;
-    background-color: #fff;
-    border-radius: 10px;
-    margin-bottom: 100px;
-    padding: 30px;
+   height: auto;
+   float: left;
+   background-color: #fff;
+   box-sizing: border-box;
+   padding: 30px;
+   border-radius: 15px;
+   margin-bottom: 90px;
+   box-shadow: 0 2px 4px 0 hsl(0deg 0% 40% / 5%);
+   min-width: 1180px;
+   padding: 30px;
   .Balance-top {
     display: flex;
     justify-content: space-between;

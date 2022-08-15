@@ -64,18 +64,40 @@
         <!-- <span>更多</span> -->
       </div>
     </div>
-    
 
-    <el-table :data="tableData" border style="width: 100%">
-      <el-table-column fixed prop="date" label="ID" width="100">
+    <!-- <el-table :data="tableData" style="width: 100%">
+      <el-table-column fixed prop="date" label="日期" width="180"> </el-table-column>
+      <el-table-column prop="name" label="姓名" width="180"> </el-table-column>
+      <el-table-column prop="address" label="地址"> </el-table-column>
+    </el-table> -->
+    <el-table :data="tableData" style="width: 100%">
+      <el-table-column prop="id" label="ID" width="100"> </el-table-column>
+      <el-table-column prop="name" label="学员" width="300">
+        <!-- eslint-disable-next-line -->
+        <template slot-scope="scope">
+          <div style="display: flex; align-items: center">
+            <img
+              :src="tableData[scope.$index].user.avatar"
+              alt=""
+              style="
+                width: 40px;
+                height: 40px;
+                margin-right: 10px;
+                border-radius: 50%;
+              "
+            />
+            {{ tableData[scope.$index].user.nick_name }}
+          </div>
+        </template>
       </el-table-column>
-      <el-table-column prop="name" label="学员" width="300"> </el-table-column>
-      <el-table-column prop="province" label="退款单号" width="300">
+      <el-table-column prop="refund_no" label="退款单号" width="300">
       </el-table-column>
-      <el-table-column prop="city" label="退款类型" width="120"> </el-table-column>
+      <el-table-column prop="city" label="退款类型" width="120">
+      </el-table-column>
       <el-table-column prop="address" label="支付渠道" width="150">
       </el-table-column>
-      <el-table-column prop="zip" label="退款金额" width="80"> </el-table-column>
+      <el-table-column prop="zip" label="退款金额" width="80">
+      </el-table-column>
       <el-table-column prop="zip" label="状态" width="220"> </el-table-column>
       <el-table-column prop="zip" label="时间" width="200"> </el-table-column>
       <el-table-column fixed="right" label="操作" width="60">
@@ -97,7 +119,7 @@
           :page-sizes="[10, 20, 50, 100]"
           :page-size="10"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="0"
+          :total="total"
         >
         </el-pagination>
       </div>
@@ -182,15 +204,15 @@ export default {
   data() {
     //这里存放数据
     return {
-       //日期
+      //日期
       pickerOptions: {
         disabledDate(time) {
           return time.getTime() > Date.now();
         },
       },
-      
+
       //更多
-      drawer: false, 
+      drawer: false,
 
       //分页
       currentPage: 1,
@@ -210,7 +232,7 @@ export default {
           label: "线下打款",
         },
       ],
-      newoptions:[
+      newoptions: [
         {
           value: "选项1",
           label: "退款类型",
@@ -224,8 +246,8 @@ export default {
           label: "线下打款(线上记录)",
         },
       ],
-      newoptionss:[
-         {
+      newoptionss: [
+        {
           value: "选项1",
           label: "退款状态",
         },
@@ -241,23 +263,24 @@ export default {
           value: "选项4",
           label: "退款异常",
         },
-            {
+        {
           value: "选项5",
           label: "退款已关闭",
         },
       ],
       value: "",
-      newvalue:"",
-      newvalues:"",
+      newvalue: "",
+      newvalues: "",
       // 这是手机号和退款单号，
       input: "",
 
+      total: null,
       tableData: [],
       numser: {
-        is_local:-1,
-        status:0,
-        page:1,
-        size:10,
+        is_local: -1,
+        status: 0,
+        page: 1,
+        size: 10,
       },
     };
   },
@@ -275,14 +298,17 @@ export default {
     },
     // 接口
     async getrefund(params) {
-      let res = await this.$request.get("/order/refund/list", { params});
-      console.log(res);
+      let res = await this.$request.get("/order/refund/list", { params });
+      this.total = res.data.data.total;
+      this.tableData = res.data.data.data;
+      // console.log(this.tableData);
+      // console.log(this.total);
     },
     handleSizeChange(val) {
-   this.numser.size = val;
+      this.numser.size = val;
       this.getorder(this.numser);
-      },
-      handleCurrentChange(val) {
+    },
+    handleCurrentChange(val) {
       this.numser.page = val;
       this.getorder(this.numser);
     },
@@ -305,13 +331,17 @@ export default {
 </script>
 <style lang='less' scoped>
 .Refun-box {
-   width: 100%;
-    background-color: #fff;
-    overflow: hidden;
-    background-color: #fff;
-    border-radius: 10px;
-    margin-bottom: 100px;
-    padding: 30px;
+  width: 100%;
+   height: auto;
+   float: left;
+   background-color: #fff;
+   box-sizing: border-box;
+   padding: 30px;
+   border-radius: 15px;
+   margin-bottom: 90px;
+   box-shadow: 0 2px 4px 0 hsl(0deg 0% 40% / 5%);
+   min-width: 1180px;
+   padding: 30px;
   .View-top-box {
     display: flex;
     align-items: center;
@@ -370,6 +400,5 @@ export default {
       justify-content: center;
     }
   }
- 
 }
 </style>

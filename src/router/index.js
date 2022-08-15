@@ -236,7 +236,7 @@ const routes = [
                 name: "Financerefund",
                 component: () => import("@/views/order/Refundorder.vue"),
                 meta: {
-                    fatherPath: "/finance/order-lis/refund",
+                    fatherPath: "/finance/order-list",
                     title: "全部订单",
                 },
             },
@@ -245,7 +245,7 @@ const routes = [
                 name: "Financedetail",
                 component: () => import("@/views/order/Orderdetails.vue"),
                 meta: {
-                    fatherPath: "/finance/Orderdetails",
+                    fatherPath: "/finance/order-list",
                     title: "全部订单",
                 },
             },
