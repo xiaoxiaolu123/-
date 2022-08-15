@@ -95,7 +95,7 @@ export default {
             this.label = res.data.permissions;
             let arr = [];
             let temp = 1;
-            console.log("res.data.permissions===>", res.data.permissions);
+            // console.log("res.data.permissions===>", res.data.permissions);
             for (let item in res.data.permissions) {
                 temp++;
                 // console.log(item);
@@ -114,7 +114,7 @@ export default {
                         children,
                     });
             }
-            console.log("this.options===>", this.options);
+            // console.log("this.options===>", this.options);
         },
         getDetail() {
       this.$request
