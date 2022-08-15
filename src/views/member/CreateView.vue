@@ -8,7 +8,6 @@
             <div class="line"></div>
             <div class="name">添加学员</div>
         </div>
-
         <div class="float-left">
             <el-form ref="form" :model="user" :rules="rules" label-width="200px">
                 <!-- 上传头像 -->

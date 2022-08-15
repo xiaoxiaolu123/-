@@ -348,7 +348,54 @@ const routes = [{
         ],
     },
     //财务
+<<<<<<< HEAD
 
+=======
+    {
+        path: "/finance",
+        name: "Finance",
+        component: () => import("@/views/DashboardView.vue"),
+        children: [
+            {
+                path: "/finance/order-list",
+                name: "FinanceOrderList",
+                component: () => import("@/views/order/IndexView.vue"),
+                meta: {
+                    fatherPath: "/finance/order-list",
+                    title: "全部订单",
+                },
+            },
+            {
+                path: "/finance/withdraw",
+                name: "FinanceWithdraw",
+                component: () => import("@/views/order/WithdrawOrdersView.vue"),
+                meta: {
+                    fatherPath: "/finance/withdraw",
+                    title: "余额提现",
+                },
+            },
+            {
+                path: "/finance/order-list/refund",
+                name: "Financerefund",
+                component: () => import("@/views/order/Refundorder.vue"),
+                meta: {
+                    fatherPath: "/finance/order-list",
+                    title: "全部订单",
+                },
+            },
+            {
+                path: "/finance/detail",
+                name: "Financedetail",
+                component: () => import("@/views/order/Orderdetails.vue"),
+                meta: {
+                    fatherPath: "/finance/order-list",
+                    title: "全部订单",
+                },
+            },
+            
+        ],
+    },
+>>>>>>> 1a737c1d6278cf7157319123dd7b5af06c97e311
     //运营
 
 

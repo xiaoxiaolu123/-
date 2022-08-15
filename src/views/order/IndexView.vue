@@ -42,13 +42,23 @@
         </div>
         <!-- 已选 -->
         <div class="drawerMore">
-          <img
+          <!-- <img
             src="@/assets/img/icon-filter.png"
             alt=""
             @click.stop="drawer = true"
-          />
-          
-          <el-button @click.stop="drawer = true" type="text"> 更多 </el-button>
+          /> -->
+          <div class="more" @click.stop="drawer = true">
+            <img v-show="!isChoose" src="@/assets/img/icon-filter.png" alt="" />
+            <img
+              v-show="isChoose"
+              src="@/assets/img/icon-filter-h.png"
+              alt=""
+            />
+            <span :class="isChoose ? 'blue' : ''">{{
+              isChoose ? "已选" : "更多"
+            }}</span>
+          </div>
+          <!-- <el-button @click.stop="drawer = true" type="text"> 更多 </el-button> -->
           <!-- <span>更多</span> -->
         </div>
       </div>
@@ -58,10 +68,10 @@
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <!-- <el-tab-pane :label="`全部(${total})`" name=0>
       </el-tab-pane> -->
-      <el-tab-pane label="全部" name="0"> </el-tab-pane>
-      <el-tab-pane label="已支付(99)" name="9"> </el-tab-pane>
-      <el-tab-pane label="支付中(512)" name="5"> </el-tab-pane>
-      <el-tab-pane label="未支付(1936)" name="1"> </el-tab-pane>
+      <el-tab-pane label="全部(2548)" name="0"> </el-tab-pane>
+      <el-tab-pane label="已支付(95)" name="9"> </el-tab-pane>
+      <el-tab-pane label="支付中(508)" name="5"> </el-tab-pane>
+      <el-tab-pane label="未支付(1935)" name="1"> </el-tab-pane>
       <el-tab-pane label="已取消(0)" name="7"> </el-tab-pane>
     </el-tabs>
     <div class="bottom-box-mian">
@@ -112,10 +122,33 @@
         <el-table-column prop="date" label="支付渠道" width="150">
           <!-- eslint-disable-next-line -->
           <template slot-scope="scope">
-          <div class="cell" v-if="tableData[scope.$index].payment == 'handPay'">
-            <span><img src="@/assets/img/card.png" width="30" height="30" /></span>
-          </div>
-          <div class="cell" v-else><span>-</span></div>
+            <div
+              class="cell"
+              v-if="tableData[scope.$index].payment == 'handPay'"
+            >
+              <span
+                ><img src="@/assets/img/card.png" width="30" height="30"
+              /></span>
+            </div>
+            <div
+              class="cell"
+              v-if="tableData[scope.$index].payment == 'wechat'"
+            >
+              <span
+                ><img src="@/assets/img/wepay.png" width="30" height="30"
+              /></span>
+            </div>
+            <div
+              class="cell"
+              v-if="tableData[scope.$index].payment == 'alipay'"
+            >
+              <span
+                ><img src="@/assets/img/ali-pay.png" width="30" height="30"
+              /></span>
+            </div>
+            <div class="cell" v-if="tableData[scope.$index].payment_text == ''">
+              <span>-</span>
+            </div>
           </template>
         </el-table-column>
         <el-table-column prop="status_text" label="支付状态" width="150">
@@ -159,23 +192,28 @@
         <el-table-column prop="date" label="操作" width="120">
           <!-- eslint-disable-next-line -->
           <template slot-scope="scope">
-            <el-link type="primary" @click.stop="detail(tableData[0].id)">查看</el-link>
+            <el-link
+              type="primary"
+              @click.stop="detail(tableData[scope.$index].id)"
+              >查看</el-link
+            >
             <el-dropdown>
-              <el-link type="primary" style="margin-left: 5px;">
+              <el-link type="primary" style="margin-left: 5px">
                 <span class="el-dropdown-link">
-                更多
-                <i class="el-icon-arrow-down el-icon--right"></i>
+                  更多
+                  <i class="el-icon-arrow-down el-icon--right"></i>
                 </span>
               </el-link>
               <el-dropdown-menu slot="dropdown">
-
                 <!-- 判断 -->
-                <el-dropdown-item v-if="tableData[scope.$index].status_text == '已支付'">
+                <el-dropdown-item
+                  v-if="tableData[scope.$index].status_text == '已支付'"
+                >
                   <el-button type="text" @click.stop="dialogFormVisible = true"
                     >退款</el-button
                   >
                 </el-dropdown-item>
-                <el-dropdown-item  v-else style="color:gray" disabled >
+                <el-dropdown-item v-else style="color: gray" disabled>
                   <el-button type="text" @click.stop="dialogFormVisible = true"
                     >退款</el-button
                   >
@@ -303,6 +341,8 @@ export default {
     //这里存放数据
 
     return {
+      // 是否选中
+      isChoose: false,
       //日期
       pickerOptions: {
         disabledDate(time) {
@@ -363,7 +403,7 @@ export default {
       created_at: "",
       value: "",
       activeName: "0",
-      tableData: [],
+      d: [],
       data: {},
       users: {},
       user_id: {},
@@ -399,7 +439,7 @@ export default {
       console.log("排序", column.prop, column.order);
       this.currpage = 1; // 排序后返回第一页
       this.proptype = column.prop; // 将键名prop赋值给变量proptype
-      this.tableData = this.tableData.sort(
+      this.d = this.tableData.sort(
         this.SortFun(column.prop, column.order === "descending")
       );
       /* if (column.order === "descending") {
@@ -431,15 +471,16 @@ export default {
     },
     //清空
     empty() {
+      this.isChoose = false;
       this.numser.page = 1;
-      this.numser.size = 10;
       this.numser.sort = "id";
       this.numser.order = "desc";
       this.numser.order_id = null;
-      (this.numser.is_refund = -1),
-        (this.numser.status = "0"),
-        this.getorder(this.numser);
+      this.numser.is_refund=-1,
+      this.numser.status=0,
       this.drawer = false;
+      this.getorder(this.numser);
+
       // this.getorder(this.numser);
     },
     //筛选
@@ -456,7 +497,7 @@ export default {
     detail: function (id) {
       this.$router.push({
         name: "Financedetail",
-        query:{id}
+        query: { id },
       });
     },
 
@@ -519,11 +560,15 @@ export default {
 <style  lang='less' scoped>
 .View-box {
   width: 100%;
+  height: auto;
+  float: left;
   background-color: #fff;
-  overflow: hidden;
-  background-color: #fff;
-  border-radius: 10px;
-  margin-bottom: 100px;
+  box-sizing: border-box;
+  padding: 30px;
+  border-radius: 15px;
+  margin-bottom: 90px;
+  box-shadow: 0 2px 4px 0 hsl(0deg 0% 40% / 5%);
+  min-width: 1180px;
   padding: 30px;
   .View-top-box {
     display: flex;
@@ -577,8 +622,8 @@ export default {
   }
   .cell {
   }
-  .downcolor{
-    color:red;
+  .downcolor {
+    color: red;
   }
 }
 </style>
