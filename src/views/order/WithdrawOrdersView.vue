@@ -24,7 +24,7 @@
         </div>
         <!-- 清空和筛选 -->
         <div class="ml">
-          <el-button>清空</el-button>
+          <el-button @click.stop="empty">清空</el-button>
           <el-button type="primary" @click.stop="screen">筛选</el-button>
         </div>
       </div>
@@ -92,7 +92,7 @@
           <el-table-column prop="name" label="添加时间" width="200">
             <!-- eslint-disable-next-line -->
             <template slot-scope="scope">
-            {{ tableData[scope.$index].created_at | global_filter }}
+            {{ tableData[scope.$index].created_at | dateFormat  }}
           </template>
           </el-table-column>
         </el-table>
@@ -186,6 +186,19 @@ export default {
           message: '请选择需要操作的数据',
           type: 'error'
         });
+    },
+    //清空
+    empty() {
+      this.numser.page = 1;
+      this.numser.size = 10;
+      this.numser.sort = "id";
+      this.numser.order = "desc";
+      this.numser.order_id = null;
+      (this.numser.is_refund = -1),
+        (this.numser.status = "0"),
+        this.getorder(this.numser);
+      this.drawer = false;
+
     },
     //筛选
     screen(){

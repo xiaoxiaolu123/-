@@ -232,11 +232,11 @@ const routes = [
                 },
             },
             {
-                path: "/finance/refund",
+                path: "/finance/order-list/refund",
                 name: "Financerefund",
                 component: () => import("@/views/order/Refundorder.vue"),
                 meta: {
-                    fatherPath: "/finance/refund",
+                    fatherPath: "/finance/order-lis/refund",
                     title: "全部订单",
                 },
             },
@@ -396,6 +396,15 @@ const routes = [
                     title: "添加管理员",
                 },
             },
+            {
+                path: '/system/adminroles',
+                name: 'adminroles',
+                component: () => import('@/views/system/AdminrolesView.vue'),
+                meta: {
+                  fatherPath: '/system/system-administrator',
+                  title: '管理员角色',
+                },
+              },
         ],
     },
 
