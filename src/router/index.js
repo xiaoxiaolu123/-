@@ -396,6 +396,15 @@ const routes = [
                     title: "添加管理员",
                 },
             },
+            {
+                path: '/system/adminroles',
+                name: 'adminroles',
+                component: () => import('@/views/system/AdminrolesView.vue'),
+                meta: {
+                  fatherPath: '/system/system-administrator',
+                  title: '管理员角色',
+                },
+              },
         ],
     },
 
