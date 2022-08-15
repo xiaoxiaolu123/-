@@ -1,28 +1,25 @@
-<!-- 添加管理员 -->
+<!--  -->
 <template>
     <div class="box">
-        <FanHui :msg="'添加管理员'"></FanHui>
+        <FanHui :msg="'添加管理员角色'"></FanHui>
         <!-- <div> -->
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-            <el-form-item label="角色" prop="">
-                <el-select v-model="value1" multiple placeholder="请选择">
-                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.display_name"> </el-option>
-                </el-select>
-                <el-link type="primary" @click.stop="RoleManagement">角色管理</el-link>
-            </el-form-item>
-            <el-form-item label="姓名" prop="username">
+            <el-form-item label="角色名" prop="username">
                 <el-input v-model="ruleForm.username"></el-input>
             </el-form-item>
-            <el-form-item label="邮箱" prop="mailbox">
-                <el-input v-model="ruleForm.mailbox"></el-input>
+            <el-form-item label="Slug" prop="slug">
+                <el-input v-model="ruleForm.slug"></el-input>
             </el-form-item>
-            <el-form-item label="密码" prop="password">
-                <el-input v-model="ruleForm.password"></el-input>
+            <el-form-item label="描述" prop="describe">
+                <el-input v-model="ruleForm.describe"></el-input>
             </el-form-item>
-            <div class="denIu"><span>禁止登录</span> <el-switch v-model="ruleForm.is_ban_login" active-color="#409eff" inactive-color="#dcdfe6"> </el-switch></div>
+            <div class="block">
+                <span class="demonstration">权限</span>
+                <el-cascader :options="options" :props="props" clearable></el-cascader>
+            </div>
             <div class="bottom-form">
                 <el-form-item>
-                    <el-button type="primary" :plain="true" @click.stop="handleSubmit">保存</el-button>
+                    <el-button type="primary" @click.stop="UploadForm">保存</el-button>
                     <el-button @click.stop="Cancel">取消</el-button>
                 </el-form-item>
             </div>
@@ -44,11 +41,12 @@ export default {
         //这里存放数据
         return {
             value: false,
+            props: { multiple: true },//正确
             ruleForm: {
                 username: "",
-                password: "",
-                password_confirmation: "",
-                mailbox: "",
+                slug: "",
+                describe: "",
+                permissions:[],
                 is_ban_login: "1",
                 delivery: false,
                 type: [],
@@ -59,28 +57,28 @@ export default {
                 username: [
                     {
                         required: true,
-                        message: "姓名不能为空",
+                        message: "角色名不能为空",
                         trigger: "blur",
                     },
                 ],
-                password: [
+                slug: [
                     {
                         required: true,
-                        message: "密码不能为空",
+                        message: "Slug不能为空",
                         trigger: "blur",
                     },
                 ],
-                mailbox: [
+                describe: [
                     {
                         required: true,
-                        message: "邮箱不能为空",
+                        message: "描述不能为空",
                         trigger: "blur",
                     },
                 ],
             },
+
+            props: { multiple: true },
             options: [],
-            value1: [],
-            value2: [],
         };
     },
     //监听属性 类似于data概念
@@ -90,36 +88,54 @@ export default {
     //方法集合
 
     methods: {
-      async  handleSubmit() {
-          let re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{12,25}$/;
-            // 获取form表单，调用校验方法
-           await  this.$request
-                .post("administrator", {
-                    email: this.ruleForm.mailbox,
-                    is_ban_login: this.ruleForm.is_ban_login,
-                    name: this.ruleForm.username,
-                    password: this.ruleForm.password,
-                    password_confirmation: this.ruleForm.password_confirmation,
-                    role_id: this.ruleForm.options,
-                })
-                .then((res) => {
-                    // console.log(res);
-                    if (res.status == 0) {
-                        // 本地存token
-                        // localStorage.setItem("admin-token", res.data.token);
-                        this.$router.push({
-                            name: "system-administrator",
-                        });
-                    } else if (res.status == 500) {
-                        // this.getCaptcha();
-                        this.$message.error(res.message);
-                       
-                    } else {
-                        return false;
-                    }
-                });
-        },
+        UploadForm: function(){
+this.$request.post('administrator_role',{
+description: this.ruleForm.describe,
+display_name: this.ruleForm.username,
+permission_ids: this.ruleForm.permissions,
+slug: this.ruleForm.slug,
+}).then((res)=>{
+    if(res.status==0){
+        this.$router.push({
+            name:'adminroles',
+        });
+    }else if(res.status==500){
+        this.$message.error(res.message);
 
+    }else{
+        return false;
+    }
+})
+        },
+        async getParameters(params) {
+            let res = await this.$request.get("administrator_role/create", { params });
+            // console.log(JSON.parse(JSON.stringify(res.data)));
+            // console.log(res.data);
+            // this.options.push(res.data.permissions);
+            this.label = res.data.permissions;
+            let arr = [];
+            let temp = 1;
+            // console.log("res.data.permissions===>", res.data.permissions);
+            for (let item in res.data.permissions) {
+                temp++;
+                // console.log(item);
+                // arr.push({
+                //     value: temp,
+                //     label: item,
+                //     children: [],
+                // });
+                let children = [];
+                res.data.permissions[item].forEach((element, index) => {
+                    children.push({ value: element.id, label: element.display_name });
+                }),
+                    this.options.push({
+                        value: temp,
+                        label: item,
+                        children,
+                    });
+            }
+            // console.log("this.options===>", this.options);
+        },
         RoleManagement() {
             this.$router.push({
                 path: "/system/adminroles",
@@ -127,7 +143,7 @@ export default {
         },
         Cancel() {
             this.$router.push({
-                path: "/system/system-administrator",
+                path: "/system/adminroles",
             });
         },
         submitForm(formName) {
@@ -142,13 +158,6 @@ export default {
         },
         resetForm(formName) {
             this.$refs[formName].resetFields();
-        },
-        async getParameters(params) {
-            let arr = await this.$request.get("administrator/create", { params }).then((res) => {
-                // console.log(JSON.parse(JSON.stringify(res.data)));
-                // console.log(res.data);
-                this.options = res.data.roles;
-            });
         },
     },
     //生命周期 - 创建完成（可以访问当前this实例）
@@ -229,5 +238,28 @@ export default {
             margin-right: 20px;
         }
     }
+    /deep/.demonstration {
+        margin-left: 53px;
+    }
+      /deep/input {
+    width: 300px;
+  }
+  /deep/.el-cascader .el-input .el-input__inner {
+    width: 1000px;
+    margin-left: 17px;
+  }
+  /deep/.el-link.el-link--primary.is-underline {
+    margin-left: 15px;
+  }
+  /deep/.el-switch {
+    margin-left: 130px;
+  }
+    // /deep/.el-cascader > .el-input--suffix > .el-input__inner {
+    //     width: 1180px;
+    //     margin-left: 16px;
+    // }
+    /deep/.el-cascader__tags{
+        padding-left: 22px;
+}
 }
 </style>

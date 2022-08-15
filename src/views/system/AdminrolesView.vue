@@ -1,22 +1,20 @@
-<!-- 管理人员-->
+<!-- 管理员角色 -->
 <template>
     <div class="box">
+         <FanHui :msg="'管理员角色'"></FanHui>
         <div class="float-left mb-30">
             <button type="button" class="el-button el-button--primary" @click.stop="Routing"><!----><!----><span>添加</span></button>
             <el-table :data="tableData" style="width: 100%">
                 <el-table-column prop="id" label="ID" width="120"> </el-table-column>
-                <el-table-column prop="name" label="姓名" width="200"> </el-table-column>
-                <el-table-column prop="email" label="登录邮箱" width="220"> </el-table-column>
-                <el-table-column sortable prop="last_login_date" label="登录日志" width="473">
-                    <template slot-scope="scope">
-                        <div>{{ tableData[scope.$index].last_login_date }}/{{ tableData[scope.$index].last_login_ip }}</div>
-                    </template>
+                <el-table-column prop="display_name" label="角色名" width="120"> </el-table-column>
+                <el-table-column prop="slug" label="Slug" width="250"> </el-table-column>
+                <el-table-column  prop="description" label="描述" width="657">
+                   
                 </el-table-column>
-                <el-table-column prop="is_ban_login" :formatter="noticeFormat" label="禁止登录" width="130"> </el-table-column>
                 <el-table-column prop="" label="操作" width="100">
                     <template slot-scope="scope">
                         <el-button size="mini" @click.stop="Compile(scope.row.id)">编辑</el-button>
-                        <el-button size="mini" type="danger" @click.stop="handleDelete(scope.row.id, scope.row.is_super)">删除</el-button>
+                        <el-button size="mini" type="danger" @click="handleDelete(scope.row.id, scope.row.slug)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -39,10 +37,14 @@
 <script>
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
+import FanHui from '@/components/FanHui.vue';
 
 export default {
     //import引入的组件需要注入到对象中才能使用
-    components: {},
+    components: {
+        FanHui,
+
+    },
     data() {
         //这里存放数据
         return {
@@ -65,16 +67,51 @@ export default {
     watch: {},
     //方法集合{}
     methods: {
+        handleDelete(id,slug){
+    this.$confirm("确认操作?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          this.$request
+            .delete(`administrator_role/${id}`)
+            .then(() => {
+              if (slug === "administrator") {
+                this.$message.error("当前用户是超级管理员账户无法删除");
+                return;
+              }
+            //   this.indexInfo();
+              this.getParameters(this.num);
+
+              this.$message({
+                type: "success",
+                
+                message: "删除成功!",
+              });
+            })
+        //    失败
+            .catch((e) => {
+              this.$message.error("删除失败");
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
+        },
         Routing() {
             this.$router.push({
-                path: "/system/system-administrator/create",
+                path: "/system/adminroles/creata",
             });
         },
          Compile(id) {
             this.$router.push({
-                path:'/system/system-administrator/update',
+                path: "/system/adminroles/updata",
                 query:{
-                 id:id,
+                    id:id
                 }
             });
         },
@@ -86,59 +123,13 @@ export default {
             }
         },
         async getParameters(params) {
-            let arr = await this.$request.get("administrator", { params }).then((res) => {
+            let arr = await this.$request.get("administrator_role", { params }).then((res) => {
                 // console.log(JSON.parse(JSON.stringify(res.data)));
                 this.tableData = res.data.data;
                 this.total = res.data.total;
             });
         },
-//  async indexInfo() {
-//       let res = await this.$request.get("administrator_role", {
-//         params: {
-//           page: 1,
-//           size: 10,
-//           sort: "id",
-//           order: "desc",
-//         },
-//       });
-    //   this.tableData = res.data.data;
-    //   this.num = res.data.total;
-    // },
-handleDelete(id,is_super){
-      this.$confirm("确认操作?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(() => {
-          this.$request
-            .delete(`administrator/${id}`)
-            .then(() => {
-              if (is_super === true) {
-                this.$message.error("当前用户是超级管理员账户无法删除");
-                return;
-              }
-            //   this.indexInfo();
-        this.getParameters(this.num);
 
-            // 删除
-              this.$message({
-                type: "success",
-                message: "删除成功",
-                
-              });
-            })
-            .catch((e) => {
-              this.$message.error("删除失败");
-            });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除",
-          });
-        });
-},
         handleSizeChange(val) {
             this.getParameters(this.num);
             this.num.size = val;
@@ -152,7 +143,6 @@ handleDelete(id,is_super){
     //生命周期 - 创建完成（可以访问当前this实例）
     created() {
         this.getParameters(this.num);
-        // this.indexInfo()
     },
     //生命周期 - 挂载完成（可以访问DOM元素）
     mounted() {},

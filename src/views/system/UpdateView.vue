@@ -1,28 +1,32 @@
-<!-- 添加管理员 -->
+<!-- 编辑管理员 -->
+
 <template>
     <div class="box">
-        <FanHui :msg="'添加管理员'"></FanHui>
+        <FanHui :msg="'编辑管理员'"></FanHui>
         <!-- <div> -->
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
             <el-form-item label="角色" prop="">
-                <el-select v-model="value1" multiple placeholder="请选择">
-                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.display_name"> </el-option>
+                <el-select v-model="ruleForm.region" multiple placeholder="请选择" @change="handleSelectChange">
+                    <el-option v-for="item in options" :key="item.id" :label="item.display_name" :value="item.id"> </el-option>
                 </el-select>
-                <el-link type="primary" @click.stop="RoleManagement">角色管理</el-link>
+                <el-link type="primary" @click.stop="Compile">角色管理</el-link>
             </el-form-item>
             <el-form-item label="姓名" prop="username">
-                <el-input v-model="ruleForm.username"></el-input>
+                <el-input v-model="ruleForm.name"></el-input>
             </el-form-item>
             <el-form-item label="邮箱" prop="mailbox">
-                <el-input v-model="ruleForm.mailbox"></el-input>
+                <el-input v-model="ruleForm.email"></el-input>
             </el-form-item>
-            <el-form-item label="密码" prop="password">
+            <el-form-item label="密码" prop="">
                 <el-input v-model="ruleForm.password"></el-input>
+                <el-alert title="不修改密码请勿填写" :closable="false" close-text type="info" show-icon> </el-alert>
             </el-form-item>
-            <div class="denIu"><span>禁止登录</span> <el-switch v-model="ruleForm.is_ban_login" active-color="#409eff" inactive-color="#dcdfe6"> </el-switch></div>
+            <div class="denIu">
+                <span>禁止登录</span> <el-switch v-model="ruleForm.is_ban_login" :active-value="1" :inactive-value="0" active-color="#409eff" inactive-color="#dcdfe6"> </el-switch>
+            </div>
             <div class="bottom-form">
                 <el-form-item>
-                    <el-button type="primary" :plain="true" @click.stop="handleSubmit">保存</el-button>
+                    <el-button type="primary" @click.stop="handleSubmit">保存</el-button>
                     <el-button @click.stop="Cancel">取消</el-button>
                 </el-form-item>
             </div>
@@ -43,6 +47,7 @@ export default {
     data() {
         //这里存放数据
         return {
+            form: {},
             value: false,
             ruleForm: {
                 username: "",
@@ -54,6 +59,7 @@ export default {
                 type: [],
                 resource: "",
                 desc: "",
+                region: [],
             },
             rules: {
                 username: [
@@ -78,9 +84,8 @@ export default {
                     },
                 ],
             },
-            options: [],
-            value1: [],
-            value2: [],
+            options: {},
+            // region: [],
         };
     },
     //监听属性 类似于data概念
@@ -88,60 +93,48 @@ export default {
     //监控data中的数据变化
     watch: {},
     //方法集合
-
     methods: {
-      async  handleSubmit() {
-          let re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{12,25}$/;
-            // 获取form表单，调用校验方法
-           await  this.$request
-                .post("administrator", {
-                    email: this.ruleForm.mailbox,
-                    is_ban_login: this.ruleForm.is_ban_login,
-                    name: this.ruleForm.username,
-                    password: this.ruleForm.password,
-                    password_confirmation: this.ruleForm.password_confirmation,
-                    role_id: this.ruleForm.options,
-                })
-                .then((res) => {
-                    // console.log(res);
-                    if (res.status == 0) {
-                        // 本地存token
-                        // localStorage.setItem("admin-token", res.data.token);
-                        this.$router.push({
-                            name: "system-administrator",
-                        });
-                    } else if (res.status == 500) {
-                        // this.getCaptcha();
-                        this.$message.error(res.message);
-                       
-                    } else {
-                        return false;
-                    }
-                });
-        },
-
-        RoleManagement() {
-            this.$router.push({
-                path: "/system/adminroles",
-            });
+        handleSelectChange() {
+            this.$forceUpdate();
         },
         Cancel() {
             this.$router.push({
                 path: "/system/system-administrator",
             });
         },
-        submitForm(formName) {
-            this.$refs[formName].validate((valid) => {
-                if (valid) {
-                    alert("submit!");
-                } else {
-                    // console.log("error submit!!");
-                    return false;
-                }
+        Compile() {
+            this.$router.push({
+                path: "/system/adminroles",
             });
         },
-        resetForm(formName) {
-            this.$refs[formName].resetFields();
+        handleSubmit: function () {
+            // 获取form表单，调用校验方法
+
+            this.$request
+                .put(`administrator/${this.$route.query.id}`, {
+                    name: this.ruleForm.name,
+                    email: this.ruleForm.email,
+                    password: this.ruleForm.password,
+                    is_ban_login: this.ruleForm.is_ban_login,
+                    role_id: this.ruleForm.region,
+                })
+                .then(() => {
+                    if (this.ruleForm.name.length == 0 || this.ruleForm.email == 0) {
+                        this.$message.error(data.message);
+                        return;
+                    }
+                    this.$message({
+                        type: "success",
+                        message: "编辑成功",
+                    });
+                    this.$router.push({
+                        path: "/system/system-administrator",
+                    });
+                })
+                .catch((e) => {
+                    this.$message.error("编辑失败");
+                });
+            // console.log(this.ruleForm.region);
         },
         async getParameters(params) {
             let arr = await this.$request.get("administrator/create", { params }).then((res) => {
@@ -152,8 +145,12 @@ export default {
         },
     },
     //生命周期 - 创建完成（可以访问当前this实例）
-    created() {
+    async created() {
         this.getParameters();
+        let arr = await this.$request.get(`administrator/${this.$route.query.id}`);
+        this.ruleForm = arr.data;
+        // console.log(arr.data);
+        this.ruleForm.region = arr.data.role_id;
     },
     //生命周期 - 挂载完成（可以访问DOM元素）
     mounted() {},
@@ -228,6 +225,18 @@ export default {
             font-size: 16px;
             margin-right: 20px;
         }
+    }
+    /deep/.el-alert--info.is-light {
+        background-color: #ffffff;
+        position: absolute;
+        top: -5px;
+        left: 350px;
+    }
+    /deep/.el-alert {
+        width: 250px;
+    }
+    /deep/.el-alert__title {
+        font-size: 16px;
     }
 }
 </style>

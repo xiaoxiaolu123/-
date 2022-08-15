@@ -288,7 +288,7 @@ const routes = [
             {
                 path: "/finance/order-list",
                 name: "FinanceOrderList",
-                component: () => import("@/views/HomeView.vue"),
+                component: () => import("@/views/order/IndexView.vue"),
                 meta: {
                     fatherPath: "/finance/order-list",
                     title: "全部订单",
@@ -297,12 +297,31 @@ const routes = [
             {
                 path: "/finance/withdraw",
                 name: "FinanceWithdraw",
-                component: () => import("@/views/HomeView.vue"),
+                component: () => import("@/views/order/WithdrawOrdersView.vue"),
                 meta: {
                     fatherPath: "/finance/withdraw",
                     title: "余额提现",
                 },
             },
+            {
+                path: "/finance/order-list/refund",
+                name: "Financerefund",
+                component: () => import("@/views/order/Refundorder.vue"),
+                meta: {
+                    fatherPath: "/finance/order-lis/refund",
+                    title: "全部订单",
+                },
+            },
+            {
+                path: "/finance/detail",
+                name: "Financedetail",
+                component: () => import("@/views/order/Orderdetails.vue"),
+                meta: {
+                    fatherPath: "/finance/Orderdetails",
+                    title: "全部订单",
+                },
+            },
+            
         ],
     },
     //运营
@@ -449,6 +468,42 @@ const routes = [
                     title: "添加管理员",
                 },
             },
+            {
+                path: '/system/adminroles',
+                name: 'adminroles',
+                component: () => import('@/views/system/AdminrolesView.vue'),
+                meta: {
+                  fatherPath: '/system/system-administrator',
+                  title: '管理员角色',
+                },
+              },
+              {
+                path: '/system/adminroles/creata',
+                name: 'adminroles',
+                component: () => import('@/views/system/CreataView.vue'),
+                meta: {
+                  fatherPath: '/system/system-administrator',
+                  title: '添加管理员角色',
+                },
+              },
+              {
+                path: '/system/adminroles/updata',
+                name: 'adminroles',
+                component: () => import('@/views/system/UpdataView.vue'),
+                meta: {
+                  fatherPath: '/system/system-administrator',
+                  title: '编辑管理员角色',
+                },
+              },
+              {
+                path: '/system/system-administrator/update',
+                name: 'update',
+                component: () => import('@/views/system/UpdateView.vue'),
+                meta: {
+                  fatherPath: '/system/system-administrator',
+                  title: '编辑管理员',
+                },
+              },
         ],
     },
 
