@@ -104,7 +104,7 @@ export default {
                 // 本地存token
                 localStorage.setItem("admin-token", res.data.token);
                 this.$router.push({
-                  name: "Dashboard",
+                  name: "DashboardHome",
                 });
               } else if (res.status == 1) {
                 this.getCaptcha();
