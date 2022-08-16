@@ -117,7 +117,7 @@ export default {
             this.ruleForm.expired_at =this.GMTToStr(this.ruleForm.expired_at);
             this.$request.post("/promoCode", this.ruleForm).then((res) => {
                 if (res.status == 0) {
-                    this.$router.push('/promocode')
+                    this.$router.go(-1);
                 } else {
                     this.$message.error(res.message);
                 }

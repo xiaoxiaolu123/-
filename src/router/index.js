@@ -348,9 +348,8 @@ const routes = [{
         ],
     },
     //财务
-<<<<<<< HEAD
 
-=======
+
     {
         path: "/finance",
         name: "Finance",
@@ -395,9 +394,115 @@ const routes = [{
             
         ],
     },
->>>>>>> 1a737c1d6278cf7157319123dd7b5af06c97e311
-    //运营
 
+    //运营
+    {
+      path: '/operate',
+      name: 'Operate',
+      component: () => import('@/views/DashboardView.vue'),
+      children: [{
+          path: '/operate/role',
+          name: 'OperateRole',
+          component: () => import('@/views/operation/Role/RoleView.vue'),
+          meta: {
+            fatherPath: '/operate/role',
+            title: 'VIP会员',
+          },
+  
+        },
+        {
+          path: '/addRole',
+          name: 'addRole',
+          component: () => import('@/views/operation/Role/AddRoleView.vue'),
+          meta: {
+            fatherPath: '/operate/role',
+            title: '添加会员',
+          },
+        },
+        {
+          path: '/editRole',
+          name: 'editRole',
+          component: () => import('@/views/operation/Role/EditRoleView.vue'),
+          meta: {
+            fatherPath: '/operate/role',
+            title: '编辑会员',
+          },
+        },
+        {
+          path: '/operate/promocode',
+          name: 'OperatePromocode',
+          component: () => import('@/views/operation/Promocode/PromocodeView.vue'),
+          meta: {
+            fatherPath: '/operate/promocode',
+            title: '优惠码',
+          },
+        },
+        {
+          path: '/createcode',
+          name: 'Createcode',
+          component: () => import('@/views/operation/Promocode/CreatecodeView.vue'),
+          meta: {
+            fatherPath: '/operate/promocode',
+            title: '添加优惠码',
+          },
+        },
+        {
+          path: '/createmulticode',
+          name: 'Createmulticode',
+          component: () => import('@/views/operation/Promocode/CreatemulticodeView.vue'),
+          meta: {
+            fatherPath: '/operate/promocode',
+            title: '优惠码批量生成',
+          },
+        },
+        {
+          path: '/codeImport',
+          name: 'CodeImport',
+          component: () => import('@/views/operation/Promocode/CodeImportView.vue'),
+          meta: {
+            fatherPath: '/operate/promocode',
+            title: '优惠码批量生成',
+          },
+        },
+        {
+          path: '/operate/message',
+          name: 'OperateMessage',
+          component: () => import('@/views/operation/wechat/WechatView.vue'),
+          meta: {
+            fatherPath: '/operate/message',
+            title: '公众号',
+          },
+        },
+        {
+          path: '/wechat/messagereply/create',
+          name: 'OperateMessage',
+          component: () => import('@/views/operation/wechat/MessagereplyCreateView.vue'),
+          meta: {
+            fatherPath: '/operate/message',
+            title: '新建自动回复',
+          },
+        },
+        {
+          path: '/wechat/messagereply/update',
+          name: 'MessagereplyUpdate',
+          component: () => import('@/views/operation/wechat/MessagereplyUpdateView.vue'),
+          meta: {
+            fatherPath: '/operate/message',
+            title: '编辑自动回复',
+          },
+        },
+        {
+          path: '/decoration/mp-wechat-menu',
+          name: 'WechatMenu',
+          component: () => import('@/views/operation/wechat/WechatMenuView.vue'),
+          meta: {
+            fatherPath: '/operate/message',
+            title: '公众号菜单',
+          },
+        },
+      ],
+    },
+  
 
     //系统
     {
