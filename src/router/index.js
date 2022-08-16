@@ -206,25 +206,7 @@ const routes = [{
 
   //财务
 
-  {
-    path: '/finance',
-    name: 'Finance',
-    component: () => import('@/views/DashboardView.vue'),
-    children: [{
-        path: '/finance/order-list',
-        name: 'FinanceOrderList',
-        component: () => import('@/views/HomeView.vue'),
-        meta: {
-          fatherPath: '/finance/order-list',
-          title: '全部订单',
-        },
-      },
-      {
-        path: '/finance/withdraw',
-        name: 'FinanceWithdraw',
-        component: () => import('@/views/HomeView.vue'),
-      },
-    ]},
+  
     //主页
 
     //装修
