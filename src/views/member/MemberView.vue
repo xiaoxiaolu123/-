@@ -17,38 +17,39 @@
               type="primary"
               size="default"
               style="margin-right: 20px; margin-left: 30px"
+              @click.stop="$router.push('profile')"
               >实名信息</el-button
             >
             <el-link
               type="primary"
               style="margin-right: 20px"
               :underline="false"
-              href=""
               target="_blank"
+              @click.stop="goEdit(userData.id)"
               >修改资料</el-link
             >
             <el-link
               type="primary"
               style="margin-right: 20px"
               :underline="false"
-              href=""
               target="_blank"
+              @click.stop="goCredit1(userData.id)"
               >修改积分</el-link
             >
             <el-link
               type="primary"
               style="margin-right: 20px"
               :underline="false"
-              href=""
               target="_blank"
+              @click.stop="goTags(userData.id)"
               >修改标签</el-link
             >
             <el-link
               type="primary"
               style="margin-right: 20px"
               :underline="false"
-              href=""
               target="_blank"
+              @click.stop="goRemark(userData.id)"
               >修改备注</el-link
             >
           </div>
@@ -189,6 +190,34 @@ export default {
   //方法集合
   methods: {
     tabsChange() {},
+    
+    // 跳转修改资料页面
+    goEdit(id) {
+      this.$router.push({
+        path:`/member/${id}/edit`,
+      });
+    },
+
+    // 跳转修改积分页面
+    goCredit1(id) {
+      this.$router.push({
+        path:`/member/${id}/credit1`,
+      });
+    },
+
+    // 跳转修改标签页面
+    goTags(id) {
+      this.$router.push({
+        path:`/member/${id}/tags`,
+      });
+    },
+
+    // 跳转修改备注页面
+    goRemark(id) {
+      this.$router.push({
+        path:`/member/${id}/remark`,
+      });
+    },
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   async created() {
