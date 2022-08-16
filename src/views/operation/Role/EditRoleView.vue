@@ -84,7 +84,7 @@ export default {
             this.$router.go(-1);
         },
         save: function () {
-            this.ruleForm.is_show = this.ruleForm.is_show ? 1 : 0;
+            this.ruleForm.is_show = this.ruleForm.is_show ? 0 : 1;
             this.$request.put("/role/" + this.id, this.ruleForm).then((res) => {
                 if (res.status == 0) {
                     this.$router.go(-1);
@@ -103,7 +103,7 @@ export default {
         this.id = this.$route.query.id
         let res = await this.$request.get('role/' + this.id);
         this.ruleForm = res.data;
-        this.ruleForm.is_show = this.ruleForm.is_show == 1 ? true : false;
+        this.ruleForm.is_show = this.ruleForm.is_show == 0 ? true : false;
     },
     //生命周期 - 挂载完成（可以访问DOM元素）
     mounted() { },

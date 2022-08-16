@@ -87,7 +87,7 @@
               </el-date-picker>
             </div>
             <div class="btn">
-              <el-button size="default">清空</el-button>
+              <el-button size="default" @click="clearFilter">清空</el-button>
               <el-button type="primary" size="default" @click="moreFilter"
                 >筛选</el-button
               >
@@ -324,9 +324,13 @@ export default {
         });
     },
     clearFilter: function () {
-      this.$request.get("promoCode").then((res) => {
+      this.$request.get("promoCode",{
+        params:{
+          page:1,
+          size:this.size
+        }
+      }).then((res) => {
         this.tableData = res.data.data;
-
         this.total = this.total = res.data.total;
         this.promotionCode = "";
         this.studentID = "";
@@ -341,8 +345,59 @@ export default {
         this.isMore = false;
       });
     },
+
     moreFilter: function () {
-      this.$request
+      if(this.created_at==''||this.expired_at==''){
+        this.filter();
+        this.isMore = true;
+        this.fStatus = false;
+        this.drawer = false;
+      }else if(this.created_at==''){
+        this.$request
+        .get("promoCode", {
+          params: {
+            user_id: this.studentID,
+            key: this.promotionCode,
+            "expired_at[0]": this.expired_at[0].toISOString(),
+            "expired_at[1]": this.expired_at[1].toISOString(),
+            page: this.page,
+            size: this.size,
+          },
+        })
+        .then((res) => {
+          this.tableData = res.data.data;
+          this.total = this.total = res.data.total;
+          this.fStatus = false;
+          this.drawer = false;
+          this.tableData.forEach((item) => {
+            item.created_at = this.GMTToStr(item.created_at);
+          });
+          this.isMore = true;
+        });
+      }else if(this.expired_at=''){
+        this.$request
+        .get("promoCode", {
+          params: {
+            user_id: this.studentID,
+            key: this.promotionCode,
+            "created_at[0]": this.created_at[0].toISOString(),
+            "created_at[1]": this.created_at[1].toISOString(),
+            page: this.page,
+            size: this.size,
+          },
+        })
+        .then((res) => {
+          this.tableData = res.data.data;
+          this.total = this.total = res.data.total;
+          this.fStatus = false;
+          this.drawer = false;
+          this.tableData.forEach((item) => {
+            item.created_at = this.GMTToStr(item.created_at);
+          });
+          this.isMore = true;
+        });
+      }else{
+        this.$request
         .get("promoCode", {
           params: {
             user_id: this.studentID,
@@ -365,6 +420,8 @@ export default {
           });
           this.isMore = true;
         });
+      }
+      
     },
   },
   //生命周期 - 创建完成（可以访问当前this实例）
